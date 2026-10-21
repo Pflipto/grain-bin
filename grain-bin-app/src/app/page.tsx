@@ -180,7 +180,17 @@ export default async function Home() {
           <p className="field-note-aside">For further study: follow changes in market share over time.</p>
         </section>
 
-        <footer className="site-footer"><span><WheatMark size={18}/> GRAIN BIN <span className="footer-divider">/</span> BY SHELTERBELT</span><span>A SHELTERBELT FIELD STUDY.</span></footer>
+        <footer className="site-footer shelterbelt-footer">
+          <div className="footer-identity"><div className="footer-wordmark"><WheatMark size={23}/><span>SHELTERBELT</span></div><p>Build useful things.</p></div>
+          <p className="footer-about">Grain Bin, a Shelterbelt project, is an ongoing field study of the stablecoin market. A place to follow the numbers, ask better questions, and learn as we go.</p>
+          <nav className="footer-links" aria-label="Shelterbelt and data links">
+            <a href="https://www.linkedin.com/in/thomas-pflipsen/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+            <a href="https://github.com/Pflipto" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a href="https://github.com/Pflipto/grain-bin" target="_blank" rel="noopener noreferrer">Source code ↗</a>
+            <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer">Data: DefiLlama ↗</a>
+          </nav>
+          <p className="footer-fineprint">For observation and learning, not investment advice.</p>
+        </footer>
       </main>
       <FieldGuide />
     </div>
