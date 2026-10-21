@@ -84,30 +84,30 @@ export default async function Home() {
             <span className="brand-emblem"><WheatMark size={30}/></span>
             <span className="brand-name">Grain Bin</span>
           </a>
-          <span className="header-caption">A clearer view of digital dollars.</span>
+          <span className="header-caption">A field journal of digital dollars.</span>
           <span className="header-edition">SHELTERBELT <span className="header-separator">/</span> EXPERIMENT 001</span>
         </div>
       </header>
 
       <main className="dashboard">
-        <div className="eyebrow"><span className="eyebrow-line"/> THE MARKET REPORT <span className="eyebrow-index">001 / STABLECOINS</span></div>
+        <div className="eyebrow"><span className="eyebrow-line"/> FIELD NOTES <span className="eyebrow-index">NO. 001 / STABLECOINS</span></div>
         <div className="intro">
           <div>
-            <h1>Digital dollars.<br/><em>Clearer perspective.</em></h1>
-            <p className="intro-description">A grounded look at the supply, momentum and concentration of USD-pegged stablecoins.</p>
+            <h1>Notes on a<br/><em>New Kind of Money.</em></h1>
+            <p className="intro-description">A running study of stablecoins: how many dollars are out there, where they gather, and how the landscape is changing.</p>
           </div>
-          <div className="intro-stamp"><WheatMark size={38}/><span>INDEPENDENT<br/>MARKET INTELLIGENCE</span></div>
+          <div className="intro-stamp"><WheatMark size={38}/><span>AN ONGOING<br/>FIELD STUDY</span></div>
         </div>
 
         <section className="overview-grid" aria-label="Market overview">
           <div className="hero-stat">
-            <div className="section-kicker">01 <span/> TOTAL MARKET SUPPLY</div>
+            <div className="section-kicker">01 <span/> DOLLARS IN CIRCULATION</div>
             <p className="hero-value tabular">{money(total)}</p>
-            <p className="stat-caption">Circulating USD-pegged stablecoins</p>
+            <p className="stat-caption">Total supply of USD-pegged stablecoins</p>
             <div className="hero-footer"><span className="source-dot"/> Source: DefiLlama <span className="footer-spacer"/> Cached for up to 1 hour</div>
           </div>
           <div className="growth-stat">
-            <div className="section-kicker">02 <span/> 30-DAY MOVEMENT</div>
+            <div className="section-kicker">02 <span/> SINCE LAST MONTH</div>
             {growth !== null && growthPct !== null ? <>
               <p className="growth-value tabular">{growth >= 0 ? "+" : "−"}{money(Math.abs(growth))}</p>
               <p className="growth-percent tabular">{growthPct >= 0 ? "+" : ""}{growthPct.toFixed(2)}% <span>over 30 days</span></p>
@@ -118,7 +118,7 @@ export default async function Home() {
 
         <section className="market-section" aria-labelledby="history-heading">
           <div className="section-heading">
-            <div><div className="section-kicker">03 <span/> THE BIG PICTURE</div><h2 id="history-heading">A year in circulation.</h2></div>
+            <div><div className="section-kicker">03 <span/> THE LONG VIEW</div><h2 id="history-heading">The Shape of Things</h2></div>
             <span className="section-meta">USD-PEGGED / 1 YEAR</span>
           </div>
           <div className="chart-card">
@@ -138,12 +138,12 @@ export default async function Home() {
 
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
-            <div><div className="section-kicker">04 <span/> MARKET STRUCTURE</div><h2 id="composition-heading">Who holds the market?</h2></div>
+            <div><div className="section-kicker">04 <span/> WHO'S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
             <span className="section-meta">SHARE OF USD SUPPLY</span>
           </div>
           <div className="composition-grid">
             <div className="composition-card">
-              <p className="card-overline">SUPPLY BY ISSUER TOKEN</p>
+              <p className="card-overline">SHARE BY STABLECOIN</p>
               <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt,total)} percent, USDC ${percent(usdc,total)} percent, others ${percent(others,total)} percent`}>
                 <div style={{width: `${percent(usdt,total)}%`,background:"var(--sb-silo)"}}/>
                 <div style={{width: `${percent(usdc,total)}%`,background:"var(--sb-harvest)"}}/>
@@ -162,16 +162,24 @@ export default async function Home() {
               </div>
             </div>
             <div className="concentration-card">
-              <p className="card-overline">TOP TWO CONCENTRATION</p>
+              <p className="card-overline">THE BIG TWO</p>
               <p className="concentration-value tabular">{percent(usdt + usdc,total)}<span>%</span></p>
               <p className="concentration-description">Combined market share of USDT and USDC.</p>
               <div className="concentration-rule"/>
-              <p className="concentration-footnote">A simple measure of how much supply is held by the two largest USD-pegged tokens tracked here.</p>
+              <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
             </div>
           </div>
         </section>
 
-        <footer className="site-footer"><span><WheatMark size={18}/> GRAIN BIN <span className="footer-divider">/</span> BY SHELTERBELT</span><span>BUILT TO UNDERSTAND, NOT TO SPECULATE.</span></footer>
+        <section className="market-section field-note" aria-labelledby="field-note-heading">
+          <div className="section-kicker">05 <span/> NOTES FROM THE FIELD</div>
+          <h2 id="field-note-heading">A question worth keeping.</h2>
+          <p>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That's an observation, not a prediction.</p>
+          <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
+          <p className="field-note-aside">For further study: follow changes in market share over time.</p>
+        </section>
+
+        <footer className="site-footer"><span><WheatMark size={18}/> GRAIN BIN <span className="footer-divider">/</span> BY SHELTERBELT</span><span>A SHELTERBELT FIELD STUDY.</span></footer>
       </main>
     </div>
   );
