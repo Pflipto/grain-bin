@@ -8,11 +8,10 @@
 
 ---
 
-Stablecoins are an unusual corner of finance: digital tokens designed to hold a familiar value, growing into a market with its own institutions, patterns, and unanswered questions.
+Stablecoins are one corner of finance: digital tokens designed to hold a familiar value, growing into a market with its own institutions, patterns, and unanswered questions.
 
 **Grain Bin is my field journal for making sense of it.** A small, evolving place to follow the numbers, notice what changes, and learn a little more with each experiment.
 
-No trading signals. No predictions dressed up as facts. Just a clearer view of what's there.
 
 ## What's in the bin?
 
@@ -28,13 +27,6 @@ The goal is to make the market approachable, not to make it sound simple.
 ## Where the numbers come from
 
 Market data comes from [DefiLlama's stablecoin dataset](https://defillama.com/stablecoins). The app reads its stablecoin list and aggregate supply history, focusing on **USD-pegged assets**.
-
-A few useful distinctions:
-
-- **Supply is not trading volume.** These charts describe tokens in circulation, not how frequently they change hands.
-- **The 30-day comparison uses historical snapshots.** It may differ slightly from a comparison against the current token-level total.
-- **Market share is based on circulating supply**, grouped here into USDT, USDC, and other USD-pegged assets.
-- Data requests are cached for up to **one hour**. Values are estimates from a third-party dataset and may be revised.
 
 Grain Bin is an independent learning project, not an investment recommendation.
 
