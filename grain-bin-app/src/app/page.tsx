@@ -220,7 +220,7 @@ export default async function Home() {
         <section className="market-section field-note" aria-labelledby="field-note-heading">
           <div className="section-kicker">05 <span/> NOTES FROM THE FIELD</div>
           <h2 id="field-note-heading">A question worth keeping.</h2>
-          <p>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That's an observation, not a prediction.</p>
+          <p>{reconciled && total !== null ? <>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That&apos;s an observation, not a prediction.</> : "The aggregate and token-level totals do not currently reconcile closely enough to report a reliable concentration percentage."}</p>
           <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
           <p className="field-note-aside">For further study: follow changes in market share over time.</p>
         </section>
