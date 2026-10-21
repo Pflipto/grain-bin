@@ -4,7 +4,8 @@ type Stablecoin = {
   name: string;
   symbol: string;
   pegType: string;
-  circulating?: { peggedUSD?: number };
+  circulating?: Record<string, number>;
+  price?: number;
 };
 type StablecoinResponse = { peggedAssets: Stablecoin[] };
 type HistoricalRecord = {
@@ -67,7 +68,14 @@ export default async function Home() {
     { name: "Other", value: 0, color: "var(--sb-oxblood)" },
   ];
   for (const coin of allAssets) {
-    const value = coin.circulating?.peggedUSD;
+    const nativeSupply = coin.circulating?.[coin.pegType];
+    // Non-USD pegs are reported in their own peg units. Use the quoted
+    // USD price to compare like-for-like, and omit unpriced assets.
+    const value = coin.pegType === "peggedUSD"
+      ? nativeSupply
+      : typeof coin.price === "number" && Number.isFinite(coin.price) && coin.price > 0
+        ? (nativeSupply ?? 0) * coin.price
+        : undefined;
     if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) continue;
     const index = coin.pegType === "peggedUSD" ? 0 : coin.pegType === "peggedEUR" ? 1 : coin.pegType === "peggedGOLD" ? 2 : 3;
     pegGroups[index].value += value;
@@ -139,17 +147,18 @@ export default async function Home() {
           </div>
           {allPegTotal > 0 ? <>
             <div className="peg-overview-bar" role="img" aria-label={pegGroups.map((group) => `${group.name}: ${percent(group.value, allPegTotal)} percent`).join(", ")}>
-              {pegGroups.filter((group) => group.value > 0).map((group) => <div key={group.name} style={{ width: `${percent(group.value, allPegTotal)}%`, background: group.color }} />)}
+              {pegGroups.filter((group) => group.value > 0).map((group) => <div key={group.name} title={`${group.name}: ${percent(group.value, allPegTotal)}% · ${money(group.value)}`} style={{ flexGrow: group.value, flexBasis: 0, background: group.color }} />)}
             </div>
-            <div className="peg-overview-legend">
+            <div className="peg-overview-legend" aria-label="Explore circulating supply by peg">
               {pegGroups.map((group) => <div className="peg-overview-item" key={group.name}>
-                <span className="peg-overview-label"><i style={{background:group.color}}/>{group.name}</span>
-                <strong className="tabular">{percent(group.value, allPegTotal)}%</strong>
-                <span className="tabular">{money(group.value)}</span>
+                <button type="button" className="peg-overview-label" aria-label={`${group.name}: ${percent(group.value, allPegTotal)} percent, ${money(group.value)} circulating`}>
+                  <i style={{background:group.color}}/>{group.name}
+                  <span className="peg-overview-tooltip" role="tooltip"><strong>{percent(group.value, allPegTotal)}%</strong><span>{money(group.value)} circulating</span></span>
+                </button>
               </div>)}
             </div>
           </> : <p className="empty-data">Peg composition data unavailable.</p>}
-          <p className="peg-overview-note">Includes USD, EUR, gold and other peg types tracked by DefiLlama. Values are converted to USD for comparison; this is not a breakdown of reserve assets.</p>
+          <p className="peg-overview-note">Includes USD, EUR, gold and other peg types tracked by DefiLlama. Values are compared in USD using available price quotes; assets without usable quotes are excluded. This is not a breakdown of reserve assets.</p>
         </section>
 
         <section className="market-section" aria-labelledby="history-heading">
