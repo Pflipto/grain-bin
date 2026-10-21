@@ -28,7 +28,7 @@ async function getMarketData() {
     Number.isFinite(record.date) && typeof record.supply === "number" &&
     Number.isFinite(record.supply) && record.supply > 0
   ).sort((a, b) => a.date - b.date);
-  return { usdAssets, history };
+  return { usdAssets, allAssets: assets.peggedAssets, history };
 }
 
 const money = (value: number) => new Intl.NumberFormat("en-US", {
@@ -51,13 +51,28 @@ function WheatMark({ size = 28 }: { size?: number }) {
 }
 
 export default async function Home() {
-  const { usdAssets, history } = await getMarketData();
+  const { usdAssets, allAssets, history } = await getMarketData();
   const total = usdAssets.reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const supplyFor = (symbol: string) => usdAssets.filter((coin) => coin.symbol === symbol)
     .reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const usdt = supplyFor("USDT");
   const usdc = supplyFor("USDC");
   const others = total - usdt - usdc;
+  // DefiLlama reports the USD equivalent in circulating.peggedUSD.
+  // Compare like-for-like USD values, even for EUR- and gold-pegged assets.
+  const pegGroups = [
+    { name: "USD", value: 0, color: "var(--sb-silo)" },
+    { name: "EUR", value: 0, color: "var(--sb-harvest)" },
+    { name: "Gold", value: 0, color: "var(--sb-sage)" },
+    { name: "Other", value: 0, color: "var(--sb-oxblood)" },
+  ];
+  for (const coin of allAssets) {
+    const value = coin.circulating?.peggedUSD;
+    if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) continue;
+    const index = coin.pegType === "peggedUSD" ? 0 : coin.pegType === "peggedEUR" ? 1 : coin.pegType === "peggedGOLD" ? 2 : 3;
+    pegGroups[index].value += value;
+  }
+  const allPegTotal = pegGroups.reduce((sum, group) => sum + group.value, 0);
   const latest = history.at(-1);
   const thirtyDaysAgo = latest ? latest.date - 30 * 86400000 : 0;
   const previous = history.filter((point) => point.date <= thirtyDaysAgo).at(-1);
@@ -115,6 +130,26 @@ export default async function Home() {
             </> : <p className="empty-data">Historical data unavailable</p>}
             <p className="growth-note">Based on historical supply snapshots, not today&apos;s live total.</p>
           </div>
+        </section>
+
+        <section className="peg-overview" aria-labelledby="peg-overview-heading">
+          <div className="peg-overview-heading">
+            <div><p className="card-overline">THE WIDER LANDSCAPE</p><h2 id="peg-overview-heading">What are stablecoins pegged to?</h2></div>
+            <span>SHARE OF CIRCULATING SUPPLY · USD EQUIVALENT</span>
+          </div>
+          {allPegTotal > 0 ? <>
+            <div className="peg-overview-bar" role="img" aria-label={pegGroups.map((group) => `${group.name}: ${percent(group.value, allPegTotal)} percent`).join(", ")}>
+              {pegGroups.filter((group) => group.value > 0).map((group) => <div key={group.name} style={{ width: `${percent(group.value, allPegTotal)}%`, background: group.color }} />)}
+            </div>
+            <div className="peg-overview-legend">
+              {pegGroups.map((group) => <div className="peg-overview-item" key={group.name}>
+                <span className="peg-overview-label"><i style={{background:group.color}}/>{group.name}</span>
+                <strong className="tabular">{percent(group.value, allPegTotal)}%</strong>
+                <span className="tabular">{money(group.value)}</span>
+              </div>)}
+            </div>
+          </> : <p className="empty-data">Peg composition data unavailable.</p>}
+          <p className="peg-overview-note">Includes USD, EUR, gold and other peg types tracked by DefiLlama. Values are converted to USD for comparison; this is not a breakdown of reserve assets.</p>
         </section>
 
         <section className="market-section" aria-labelledby="history-heading">
