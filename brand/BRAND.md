@@ -1,16 +1,16 @@
 # Shelterbelt / Grain Bin brand system
-Version 0.3 · Creative direction: **60% Digital Agrarian / 40% Modern Editorial**
+Version 0.4 · Creative direction: **60% Digital Agrarian / 40% Modern Editorial**
 
 ## Identity
 Shelterbelt is the parent workshop: useful, independent, thoughtful products. Grain Bin is Experiment 001: stablecoin market intelligence with the visual sensibility of a Midwestern financial journal.
 
 **Personality:** grounded, independent, useful, enduring. Express agricultural heritage through architecture, materiality, typography and a disciplined palette, not novelty farm clip-art.
 
-**Voice:** plainspoken, precise, curious, measured. Never crypto-hype, financial promises or breathless jargon.
+**Voice:** 70% personal field journal, 30% analytical instrument. Draw on the observational care of Darwin's notebooks and the literary elegance of Fitzgerald without imitation, ornament for its own sake, crypto-hype, financial promises or breathless jargon. The interface is precise; the narrator is curious.\n\n**Editorial rules:** Observe before interpreting. Separate measured facts, tentative observations, and questions for further study. Never imply the data proves a prediction. Keep labels and metric definitions immediately understandable; reserve literary flourishes for headings, introductions and marginal notes.
 
 Working copy:
 - Shelterbelt: *Build useful things.*
-- Grain Bin: *A clearer view of digital dollars.*
+- Grain Bin: *Notes on a New Kind of Money.*
 
 ## Color system
 | Token | Hex | Role |
