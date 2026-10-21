@@ -67,14 +67,13 @@ export default async function Home() {
   const pegGroups = [
     { name: "USD", value: 0, color: "var(--sb-silo)", present: false },
     { name: "EUR", value: 0, color: "var(--sb-harvest)", present: false },
-    { name: "Gold", value: 0, color: "var(--sb-sage)", present: false },
-    { name: "BTC", value: 0, color: "var(--sb-rust)", present: false },
     { name: "Other", value: 0, color: "var(--sb-oxblood)", present: false },
   ];
   for (const [type, amount] of Object.entries(pegTotals)) {
     if (typeof amount !== "number" || !Number.isFinite(amount) || amount < 0) continue;
     const peg = type.toLowerCase();
-    const index = peg === "peggedusd" ? 0 : peg === "peggedeur" ? 1 : /gold|xau/.test(peg) ? 2 : /btc|bitcoin/.test(peg) ? 3 : 4;
+    if (/gold|xau|btc|bitcoin/.test(peg)) continue;
+    const index = peg === "peggedusd" ? 0 : peg === "peggedeur" ? 1 : 2;
     pegGroups[index].value += amount;
     pegGroups[index].present = true;
   }
@@ -156,7 +155,7 @@ export default async function Home() {
               </div>)}
             </div>
           </> : <p className="empty-data">Peg composition data unavailable.</p>}
-          <p className="peg-overview-note">Includes USD, EUR, gold, BTC and other peg types tracked by DefiLlama. Values use DefiLlama’s latest USD-equivalent historical snapshot; absent peg types are marked not reported. This is not a breakdown of reserve assets.</p>
+          <p className="peg-overview-note">Includes USD, EUR and other non-commodity, non-crypto peg types tracked by DefiLlama. Values use DefiLlama’s latest USD-equivalent historical snapshot; absent peg types are marked not reported. This is not a breakdown of reserve assets.</p>
         </section>
 
         <section className="market-section" aria-labelledby="history-heading">
