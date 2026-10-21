@@ -66,8 +66,9 @@ export default async function Home() {
   const pegTotals = snapshot?.totalCirculatingUSD ?? {};
   const total = typeof pegTotals.peggedUSD === 'number' && pegTotals.peggedUSD > 0 ? pegTotals.peggedUSD : null;
   const snapshotDate = snapshot ? Number(snapshot.date) * 1000 : null;
-  const reconciled = total !== null && Math.abs(assetTotal - total) / total <= 0.005;
-  const others = reconciled && total !== null ? Math.max(0, total - usdt - usdc) : 0;
+  const hasAssetBreakdown = assetTotal > 0 && Number.isFinite(assetTotal);
+  const others = hasAssetBreakdown ? Math.max(0, assetTotal - usdt - usdc) : 0;
+  const sourceDifferencePct = total !== null && hasAssetBreakdown ? Math.abs(assetTotal - total) / total * 100 : null;
   const pegGroups = [
     { name: "USD", value: 0, color: "var(--sb-silo)", present: false },
     { name: "EUR", value: 0, color: "var(--sb-harvest)", present: false },
@@ -126,9 +127,9 @@ export default async function Home() {
 
         <section className="overview-grid" aria-label="Market overview">
           <div className="hero-stat">
-            <div className="section-kicker">01 <span/> DOLLARS IN CIRCULATION</div>
+            <div className="section-kicker">01 <span/> USD-PEGGED CIRCULATING VALUE</div>
             <p className="hero-value tabular">{total !== null ? money(total) : 'Unavailable'}</p>
-            <p className="stat-caption">Total supply of USD-pegged stablecoins</p>
+            <p className="stat-caption">USD-equivalent circulating value of USD-pegged stablecoins</p>
             <div className="hero-footer"><span className="source-dot"/> Source: DefiLlama <span className="footer-spacer"/> {snapshotDate !== null ? `As of ${new Date(snapshotDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })} UTC · Checked hourly` : 'Snapshot unavailable · Checked hourly'}</div>
           </div>
           <div className="growth-stat">
@@ -162,6 +163,12 @@ export default async function Home() {
           <p className="peg-overview-note">Includes USD, EUR and other non-commodity, non-crypto peg types tracked by DefiLlama. Values use DefiLlama’s latest USD-equivalent historical snapshot; absent peg types are marked not reported. This is not a breakdown of reserve assets.</p>
         </section>
 
+        <section className="market-section" aria-label="Data methodology">
+          <div className="section-kicker">DATA NOTES <span/> HOW WE COUNT</div>
+          <p className="stat-caption">The headline, monthly change, and historical chart use DefiLlama&apos;s public historical USD-valued circulating supply for USD-pegged stablecoins. This is not necessarily the same measure as DefiLlama&apos;s website market cap, which may use different coverage, methodology, or reporting times.</p>
+          <p className="stat-caption">Market-share figures below use the current individual-asset supply dataset and its own total as the denominator, rather than mixing current token data with a dated historical aggregate. {sourceDifferencePct !== null ? `The current token sum differs from the historical aggregate by ${sourceDifferencePct.toFixed(2)}%.` : "Comparison with the historical aggregate is unavailable."}</p>
+        </section>
+
         <section className="market-section" aria-labelledby="history-heading">
           <div className="section-heading">
             <div><div className="section-kicker">03 <span/> THE LONG VIEW</div><h2 id="history-heading">The Shape of Things</h2></div>
@@ -185,15 +192,15 @@ export default async function Home() {
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
             <div><div className="section-kicker">04 <span/> WHO'S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
-            <span className="section-meta">SHARE OF USD SUPPLY</span>
+            <span className="section-meta">SHARE OF CURRENT USD-PEGGED TOKEN SUPPLY</span>
           </div>
-          {reconciled && total !== null ? <div className="composition-grid">
+          {hasAssetBreakdown ? <div className="composition-grid">
             <div className="composition-card">
               <p className="card-overline">SHARE BY STABLECOIN</p>
-              <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt,total)} percent, USDC ${percent(usdc,total)} percent, others ${percent(others,total)} percent`}>
-                <div style={{width: `${percent(usdt,total)}%`,background:"var(--sb-silo)"}}/>
-                <div style={{width: `${percent(usdc,total)}%`,background:"var(--sb-harvest)"}}/>
-                <div style={{width: `${percent(others,total)}%`,background:"var(--sb-sage)"}}/>
+              <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt,assetTotal)} percent, USDC ${percent(usdc,assetTotal)} percent, others ${percent(others,assetTotal)} percent`}>
+                <div style={{width: `${percent(usdt,assetTotal)}%`,background:"var(--sb-silo)"}}/>
+                <div style={{width: `${percent(usdc,assetTotal)}%`,background:"var(--sb-harvest)"}}/>
+                <div style={{width: `${percent(others,assetTotal)}%`,background:"var(--sb-sage)"}}/>
               </div>
               <div className="share-list">
                 {[
@@ -203,24 +210,24 @@ export default async function Home() {
                 ].map((coin) => <div className="share-row" key={coin.name}>
                   <span className="share-label"><i style={{background:coin.color}}/>{coin.name}</span>
                   <span className="share-amount tabular">{money(coin.value)}</span>
-                  <strong className="tabular">{percent(coin.value,total)}%</strong>
+                  <strong className="tabular">{percent(coin.value,assetTotal)}%</strong>
                 </div>)}
               </div>
             </div>
             <div className="concentration-card">
               <p className="card-overline">THE BIG TWO</p>
-              <p className="concentration-value tabular">{percent(usdt + usdc,total)}<span>%</span></p>
+              <p className="concentration-value tabular">{percent(usdt + usdc,assetTotal)}<span>%</span></p>
               <p className="concentration-description">Combined market share of USDT and USDC.</p>
               <div className="concentration-rule"/>
               <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
             </div>
-          </div> : <div className="composition-card"><p className="card-overline">RECONCILIATION PENDING</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">The individual asset total differs from the dated aggregate by more than 0.5%. We will not display inconsistent market shares.</p></div>}
+          </div> : <div className="composition-card"><p className="card-overline">RECONCILIATION PENDING</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">Individual asset supply data is unavailable.</p></div>}
         </section>
 
         <section className="market-section field-note" aria-labelledby="field-note-heading">
           <div className="section-kicker">05 <span/> NOTES FROM THE FIELD</div>
           <h2 id="field-note-heading">A question worth keeping.</h2>
-          <p>{reconciled && total !== null ? <>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That&apos;s an observation, not a prediction.</> : "The aggregate and token-level totals do not currently reconcile closely enough to report a reliable concentration percentage."}</p>
+          <p>{hasAssetBreakdown ? <>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, assetTotal)}%</strong> of the USD-pegged individual-asset supply counted here. That&apos;s an observation, not a prediction.</> : "Individual-asset supply data is currently unavailable."}</p>
           <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
           <p className="field-note-aside">For further study: follow changes in market share over time.</p>
         </section>
