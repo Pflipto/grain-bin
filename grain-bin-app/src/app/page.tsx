@@ -237,6 +237,7 @@ export default async function Home() {
           <div className="footer-identity"><div className="footer-wordmark"><WheatMark size={23}/><span>SHELTERBELT</span></div><p>Build useful things.</p></div>
           <p className="footer-about">Grain Bin, a Shelterbelt project, is an ongoing field study of the stablecoin market. A place to follow the numbers, ask better questions, and learn as we go.</p>
           <nav className="footer-links" aria-label="Shelterbelt and data links">
+            <a href="https://shelterbelt.xyz/">Shelterbelt ↗</a>
             <a href="https://www.linkedin.com/in/thomas-pflipsen/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
             <a href="https://github.com/Pflipto" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
             <a href="https://github.com/Pflipto/grain-bin" target="_blank" rel="noopener noreferrer">Source code ↗</a>
