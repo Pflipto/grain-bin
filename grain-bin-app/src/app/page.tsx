@@ -10,7 +10,7 @@ type Stablecoin = {
 type StablecoinResponse = { peggedAssets: Stablecoin[] };
 type HistoricalRecord = {
   date: string | number;
-  totalCirculatingUSD?: { peggedUSD?: number };
+  totalCirculatingUSD?: Record<string, number>;
 };
 
 async function getMarketData() {
@@ -29,7 +29,7 @@ async function getMarketData() {
     Number.isFinite(record.date) && typeof record.supply === "number" &&
     Number.isFinite(record.supply) && record.supply > 0
   ).sort((a, b) => a.date - b.date);
-  return { usdAssets, allAssets: assets.peggedAssets, history };
+  return { usdAssets, rawHistory, history };
 }
 
 const money = (value: number) => new Intl.NumberFormat("en-US", {
@@ -52,34 +52,31 @@ function WheatMark({ size = 28 }: { size?: number }) {
 }
 
 export default async function Home() {
-  const { usdAssets, allAssets, history } = await getMarketData();
+  const { usdAssets, rawHistory, history } = await getMarketData();
   const total = usdAssets.reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const supplyFor = (symbol: string) => usdAssets.filter((coin) => coin.symbol === symbol)
     .reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const usdt = supplyFor("USDT");
   const usdc = supplyFor("USDC");
   const others = total - usdt - usdc;
-  // Peg categories are distinct from collateral or reserve backing.
+  // Historical snapshots contain USD-converted totals keyed by peg type.
+  // Do not infer zero when a peg type is absent from the source.
+  const snapshot = [...rawHistory].sort((a, b) => Number(b.date) - Number(a.date))
+    .find((point) => point.totalCirculatingUSD && Object.keys(point.totalCirculatingUSD).length > 0);
+  const pegTotals = snapshot?.totalCirculatingUSD ?? {};
   const pegGroups = [
-    { name: "USD", value: 0, color: "var(--sb-silo)" },
-    { name: "EUR", value: 0, color: "var(--sb-harvest)" },
-    { name: "Gold", value: 0, color: "var(--sb-sage)" },
-    { name: "BTC", value: 0, color: "var(--sb-rust)" },
-    { name: "Other", value: 0, color: "var(--sb-oxblood)" },
+    { name: "USD", value: 0, color: "var(--sb-silo)", present: false },
+    { name: "EUR", value: 0, color: "var(--sb-harvest)", present: false },
+    { name: "Gold", value: 0, color: "var(--sb-sage)", present: false },
+    { name: "BTC", value: 0, color: "var(--sb-rust)", present: false },
+    { name: "Other", value: 0, color: "var(--sb-oxblood)", present: false },
   ];
-  for (const coin of allAssets) {
-    const nativeSupply = coin.circulating?.[coin.pegType];
-    // Non-USD pegs are reported in their own peg units. Use the quoted
-    // USD price to compare like-for-like, and omit unpriced assets.
-    const value = coin.pegType === "peggedUSD"
-      ? nativeSupply
-      : typeof coin.price === "number" && Number.isFinite(coin.price) && coin.price > 0
-        ? (nativeSupply ?? 0) * coin.price
-        : undefined;
-    if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) continue;
-    const peg = coin.pegType.toLowerCase();
+  for (const [type, amount] of Object.entries(pegTotals)) {
+    if (typeof amount !== "number" || !Number.isFinite(amount) || amount < 0) continue;
+    const peg = type.toLowerCase();
     const index = peg === "peggedusd" ? 0 : peg === "peggedeur" ? 1 : /gold|xau/.test(peg) ? 2 : /btc|bitcoin/.test(peg) ? 3 : 4;
-    pegGroups[index].value += value;
+    pegGroups[index].value += amount;
+    pegGroups[index].present = true;
   }
   const allPegTotal = pegGroups.reduce((sum, group) => sum + group.value, 0);
   const latest = history.at(-1);
@@ -147,19 +144,19 @@ export default async function Home() {
             <span>SHARE OF CIRCULATING SUPPLY · USD EQUIVALENT</span>
           </div>
           {allPegTotal > 0 ? <>
-            <div className="peg-overview-bar" role="img" aria-label={pegGroups.map((group) => `${group.name}: ${percent(group.value, allPegTotal)} percent`).join(", ")}>
-              {pegGroups.filter((group) => group.value > 0).map((group) => <div key={group.name} title={`${group.name}: ${percent(group.value, allPegTotal)}% · ${money(group.value)}`} style={{ flexGrow: group.value, flexBasis: 0, background: group.color }} />)}
+            <div className="peg-overview-bar" role="img" aria-label={pegGroups.map((group) => `${group.name}: ${group.present ? percent(group.value, allPegTotal) + " percent" : "not reported"}`).join(", ")}>
+              {pegGroups.filter((group) => group.present && group.value > 0).map((group) => <div key={group.name} title={`${group.name}: ${percent(group.value, allPegTotal)}% · ${money(group.value)}`} style={{ flexGrow: group.value, flexBasis: 0, background: group.color }} />)}
             </div>
             <div className="peg-overview-legend" aria-label="Explore circulating supply by peg">
               {pegGroups.map((group) => <div className="peg-overview-item" key={group.name}>
-                <button type="button" className="peg-overview-label" aria-label={`${group.name}: ${percent(group.value, allPegTotal)} percent, ${money(group.value)} circulating`}>
+                <button type="button" className="peg-overview-label" aria-label={group.present ? `${group.name}: ${percent(group.value, allPegTotal)} percent, ${money(group.value)} circulating` : `${group.name}: not reported by source`}>
                   <i style={{background:group.color}}/>{group.name}
-                  <span className="peg-overview-tooltip" role="tooltip"><strong>{percent(group.value, allPegTotal)}%</strong><span>{money(group.value)} circulating</span></span>
+                  <span className="peg-overview-tooltip" role="tooltip"><strong>{group.present ? `${percent(group.value, allPegTotal)}%` : "Not reported"}</strong><span>{group.present ? `${money(group.value)} circulating` : "Not included in this dataset"}</span></span>
                 </button>
               </div>)}
             </div>
           </> : <p className="empty-data">Peg composition data unavailable.</p>}
-          <p className="peg-overview-note">Includes USD, EUR, gold, BTC and other peg types tracked by DefiLlama. Values are compared in USD using available price quotes; assets without usable quotes are excluded. This is not a breakdown of reserve assets.</p>
+          <p className="peg-overview-note">Includes USD, EUR, gold, BTC and other peg types tracked by DefiLlama. Values use DefiLlama’s latest USD-equivalent historical snapshot; absent peg types are marked not reported. This is not a breakdown of reserve assets.</p>
         </section>
 
         <section className="market-section" aria-labelledby="history-heading">
