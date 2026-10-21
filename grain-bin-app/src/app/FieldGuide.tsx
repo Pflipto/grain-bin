@@ -25,11 +25,12 @@ export default function FieldGuide() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
+    const trigger = triggerRef.current;
     const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; triggerRef.current?.focus(); };
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; trigger?.focus(); };
   }, [open]);
   const results = entries.filter((entry) => [entry.term, entry.subtitle, entry.category, entry.description].join(" ").toLowerCase().includes(query.trim().toLowerCase()));
   return <>

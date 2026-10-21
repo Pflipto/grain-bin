@@ -1,3 +1,4 @@
+import Link from "next/link";
 import FieldGuide from "./FieldGuide";
 type Stablecoin = {
   id: string;
@@ -106,10 +107,10 @@ export default async function Home() {
     <div className="site-shell">
       <header className="site-header">
         <div className="header-inner">
-          <a className="brand-lockup" href="/" aria-label="Grain Bin home">
+          <Link className="brand-lockup" href="/" aria-label="Grain Bin home">
             <span className="brand-emblem"><WheatMark size={30}/></span>
             <span className="brand-name">Grain Bin</span>
-          </a>
+          </Link>
           <span className="header-caption">A field journal of digital dollars.</span>
           <span className="header-edition">SHELTERBELT <span className="header-separator">/</span> EXPERIMENT 001</span>
         </div>
@@ -191,7 +192,7 @@ export default async function Home() {
 
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
-            <div><div className="section-kicker">04 <span/> WHO'S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
+            <div><div className="section-kicker">04 <span/> WHO&apos;S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
             <span className="section-meta">SHARE OF CURRENT USD-PEGGED TOKEN SUPPLY</span>
           </div>
           {hasAssetBreakdown ? <div className="composition-grid">

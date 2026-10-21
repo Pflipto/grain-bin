@@ -68,6 +68,26 @@ npm run build
 npm run start
 ```
 
+## Development checks
+
+Use Node.js 24 and run these commands from `grain-bin-app/`:
+
+```bash
+npm ci
+npm run lint
+npm run typecheck
+npm run build
+```
+
+GitHub Actions runs these checks on pull requests and changes to `main`.
+Lint warnings fail the check. Type checking generates Next.js route types first,
+so it also works in a fresh checkout. There is currently no automated test suite.
+The build needs access to Google Fonts (`fonts.googleapis.com` and
+`fonts.gstatic.com`); live dashboard validation also needs `stablecoins.llama.fi`.
+A passing build does not replace checking the dashboard with live data in a
+Vercel preview. Configure the **Lint, types, and build** check as required in
+GitHub branch protection if merges should be blocked on failures.
+
 The dashboard requests public DefiLlama endpoints at runtime, so an internet connection is needed for live data. No API key is currently required.
 
 ## The next questions

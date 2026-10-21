@@ -1,0 +1,37 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: Lint, types, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: grain-bin-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: grain-bin-app/package-lock.json
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: TypeScript
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
