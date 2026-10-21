@@ -1,3 +1,4 @@
+import FieldGuide from "./FieldGuide";
 type Stablecoin = {
   id: string;
   name: string;
@@ -181,6 +182,7 @@ export default async function Home() {
 
         <footer className="site-footer"><span><WheatMark size={18}/> GRAIN BIN <span className="footer-divider">/</span> BY SHELTERBELT</span><span>A SHELTERBELT FIELD STUDY.</span></footer>
       </main>
+      <FieldGuide />
     </div>
   );
 }
