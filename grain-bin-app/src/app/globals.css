@@ -1,5 +1,16 @@
 @import "tailwindcss";
-@import "../../../brand/tokens.css";
+:root {
+  --sb-silo: #171c17;
+  --sb-canvas: #f2ebdd;
+  --sb-paper: #faf7f0;
+  --sb-harvest: #c58a42;
+  --sb-sage: #68755b;
+  --sb-oxblood: #762d36;
+  --sb-rust: #a64f3b;
+  --sb-line: #d9d0bf;
+  --sb-muted: #60685d;
+  --sb-radius-card: 12px;
+}
 
 :root { color-scheme: light; }
 @theme inline {
