@@ -1,5 +1,5 @@
 # Shelterbelt / Grain Bin brand system
-Version 0.2 · Creative direction: **60% Digital Agrarian / 40% Modern Editorial**
+Version 0.3 · Creative direction: **60% Digital Agrarian / 40% Modern Editorial**
 
 ## Identity
 Shelterbelt is the parent workshop: useful, independent, thoughtful products. Grain Bin is Experiment 001: stablecoin market intelligence with the visual sensibility of a Midwestern financial journal.
@@ -42,11 +42,11 @@ Use Silo on Canvas/Paper for body copy. Harvest is an accent, not a body-text co
 - Shelterbelt maker's mark is secondary to Grain Bin product identity.
 
 ## Mark system
-**Primary concept:** a reduced architectural silhouette of a tall central grain elevator flanked by two lower rounded bins. Strong vertical rhythm, restrained geometry, no text in the favicon.
+**Primary concept:** a stylized, symmetrical wheat-stalk emblem, selected from the approved brand exploration. Five strong grain shapes and a single stem form a distinctive silhouette at small sizes. The more detailed grain elevator illustration is reserved for large editorial imagery and optional future secondary lockups.
 
 - Favicon source: `grain-bin-app/src/app/icon.svg` (Next.js App Router).
-- Dark Silo field, Canvas center tower, Harvest side bins.
-- This is a *simplified symbol* intended for 16px–64px; it is not a detailed engraving. Architectural illustration can be used at larger sizes, separately from the favicon.
+- Dark Silo field with a solid Harvest wheat emblem. A Canvas-field / Silo-emblem reverse variant may be developed later.
+- This is a *simplified symbol* intended for 16px–64px; it is not a detailed engraving. Detailed grain-elevator illustration can be used at larger sizes, separately from the favicon.
 - Keep clear space around the symbol. Do not add decorative strokes, gradients, emoji, or micro-detail.
 - Review at 16px, 32px and browser-tab size before final approval. A favicon should read as a silhouette, not as a miniature illustration.
 - Brand wordmark treatment: editorial serif “GRAIN BIN” with generous tracking in surrounding UI; final vector wordmark to be designed separately.
