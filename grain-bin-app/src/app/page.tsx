@@ -53,17 +53,21 @@ function WheatMark({ size = 28 }: { size?: number }) {
 
 export default async function Home() {
   const { usdAssets, rawHistory, history } = await getMarketData();
-  const total = usdAssets.reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
+  const assetTotal = usdAssets.reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const supplyFor = (symbol: string) => usdAssets.filter((coin) => coin.symbol === symbol)
     .reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
   const usdt = supplyFor("USDT");
   const usdc = supplyFor("USDC");
-  const others = total - usdt - usdc;
+
   // Historical snapshots contain USD-converted totals keyed by peg type.
   // Do not infer zero when a peg type is absent from the source.
   const snapshot = [...rawHistory].sort((a, b) => Number(b.date) - Number(a.date))
     .find((point) => point.totalCirculatingUSD && Object.keys(point.totalCirculatingUSD).length > 0);
   const pegTotals = snapshot?.totalCirculatingUSD ?? {};
+  const total = typeof pegTotals.peggedUSD === 'number' && pegTotals.peggedUSD > 0 ? pegTotals.peggedUSD : null;
+  const snapshotDate = snapshot ? Number(snapshot.date) * 1000 : null;
+  const reconciled = total !== null && Math.abs(assetTotal - total) / total <= 0.005;
+  const others = reconciled && total !== null ? Math.max(0, total - usdt - usdc) : 0;
   const pegGroups = [
     { name: "USD", value: 0, color: "var(--sb-silo)", present: false },
     { name: "EUR", value: 0, color: "var(--sb-harvest)", present: false },
@@ -78,14 +82,14 @@ export default async function Home() {
     pegGroups[index].present = true;
   }
   const allPegTotal = pegGroups.reduce((sum, group) => sum + group.value, 0);
-  const latest = history.at(-1);
+  const latest = snapshotDate !== null ? history.find(point => point.date === snapshotDate) : undefined;
   const thirtyDaysAgo = latest ? latest.date - 30 * 86400000 : 0;
   const previous = history.filter((point) => point.date <= thirtyDaysAgo).at(-1);
-  const growth = latest && previous ? latest.supply - previous.supply : null;
+  const growth = total !== null && latest && previous ? total - previous.supply : null;
   const growthPct = growth !== null && previous && previous.supply > 0
     ? growth / previous.supply * 100 : null;
 
-  const chartPoints = latest ? history.filter((point) => point.date >= latest.date - 365 * 86400000) : [];
+  const chartPoints = latest ? history.filter((point) => point.date <= latest.date && point.date >= latest.date - 365 * 86400000) : [];
   const min = chartPoints.length ? Math.min(...chartPoints.map((point) => point.supply)) : 0;
   const max = chartPoints.length ? Math.max(...chartPoints.map((point) => point.supply)) : 0;
   const span = max - min || 1;
@@ -123,9 +127,9 @@ export default async function Home() {
         <section className="overview-grid" aria-label="Market overview">
           <div className="hero-stat">
             <div className="section-kicker">01 <span/> DOLLARS IN CIRCULATION</div>
-            <p className="hero-value tabular">{money(total)}</p>
+            <p className="hero-value tabular">{total !== null ? money(total) : 'Unavailable'}</p>
             <p className="stat-caption">Total supply of USD-pegged stablecoins</p>
-            <div className="hero-footer"><span className="source-dot"/> Source: DefiLlama <span className="footer-spacer"/> Cached for up to 1 hour</div>
+            <div className="hero-footer"><span className="source-dot"/> Source: DefiLlama <span className="footer-spacer"/> {snapshotDate !== null ? `As of ${new Date(snapshotDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })} UTC · Checked hourly` : 'Snapshot unavailable · Checked hourly'}</div>
           </div>
           <div className="growth-stat">
             <div className="section-kicker">02 <span/> SINCE LAST MONTH</div>
@@ -133,7 +137,7 @@ export default async function Home() {
               <p className="growth-value tabular">{growth >= 0 ? "+" : "−"}{money(Math.abs(growth))}</p>
               <p className="growth-percent tabular">{growthPct >= 0 ? "+" : ""}{growthPct.toFixed(2)}% <span>over 30 days</span></p>
             </> : <p className="empty-data">Historical data unavailable</p>}
-            <p className="growth-note">Based on historical supply snapshots, not today&apos;s live total.</p>
+            <p className="growth-note">Same dated USD supply series, compared with 30 days earlier.</p>
           </div>
         </section>
 
@@ -183,7 +187,7 @@ export default async function Home() {
             <div><div className="section-kicker">04 <span/> WHO'S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
             <span className="section-meta">SHARE OF USD SUPPLY</span>
           </div>
-          <div className="composition-grid">
+          {reconciled && total !== null ? <div className="composition-grid">
             <div className="composition-card">
               <p className="card-overline">SHARE BY STABLECOIN</p>
               <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt,total)} percent, USDC ${percent(usdc,total)} percent, others ${percent(others,total)} percent`}>
@@ -210,13 +214,13 @@ export default async function Home() {
               <div className="concentration-rule"/>
               <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
             </div>
-          </div>
+          </div> : <div className="composition-card"><p className="card-overline">RECONCILIATION PENDING</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">The individual asset total differs from the dated aggregate by more than 0.5%. We will not display inconsistent market shares.</p></div>}
         </section>
 
         <section className="market-section field-note" aria-labelledby="field-note-heading">
           <div className="section-kicker">05 <span/> NOTES FROM THE FIELD</div>
           <h2 id="field-note-heading">A question worth keeping.</h2>
-          <p>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That's an observation, not a prediction.</p>
+          <p>{reconciled && total !== null ? <>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, total)}%</strong> of the USD-pegged supply counted here. That&apos;s an observation, not a prediction.</> : "The aggregate and token-level totals do not currently reconcile closely enough to report a reliable concentration percentage."}</p>
           <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
           <p className="field-note-aside">For further study: follow changes in market share over time.</p>
         </section>
