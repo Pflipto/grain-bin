@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Grain Bin wheat emblem">
+  <rect width="64" height="64" rx="12" fill="#171C17"/>
+  <g fill="#C58A42">
+    <path d="M32 8C26 15 28 20 32 24C36 20 38 15 32 8Z"/>
+    <path d="M18 19C18 28 23 32 30 34C30 27 26 22 18 19Z"/>
+    <path d="M46 19C46 28 41 32 34 34C34 27 38 22 46 19Z"/>
+    <path d="M16 32C17 40 22 44 30 45C29 38 24 34 16 32Z"/>
+    <path d="M48 32C47 40 42 44 34 45C35 38 40 34 48 32Z"/>
+    <path d="M31 24H33V55H31Z"/>
+  </g>
+</svg>

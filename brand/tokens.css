@@ -1,0 +1,18 @@
+:root {
+  /* Shelterbelt / Grain Bin — brand v0.1 */
+  --sb-silo: #171c17;
+  --sb-canvas: #f2ebdd;
+  --sb-paper: #faf7f0;
+  --sb-harvest: #c58a42;
+  --sb-sage: #68755b;
+  --sb-oxblood: #762d36;
+  --sb-rust: #a64f3b;
+  --sb-line: #d9d0bf;
+  --sb-muted: #60685d;
+
+  --sb-font-display: "Newsreader", Georgia, serif;
+  --sb-font-ui: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --sb-radius-card: 12px;
+  --sb-border-subtle: 1px solid var(--sb-line);
+}
