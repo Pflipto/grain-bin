@@ -112,3 +112,16 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .field-note > p strong { color: var(--sb-silo); }
 .field-note .field-note-question { font: italic 500 clamp(21px, 2.6vw, 29px)/1.4 var(--font-newsreader), Georgia, serif; color: var(--sb-silo); margin: 22px 0; }
 .field-note .field-note-aside { font-size: 12px; color: #806747; }
+
+/* Shelterbelt's colophon */
+.shelterbelt-footer { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px 48px; align-items: start; letter-spacing: normal; font-size: 13px; }
+.shelterbelt-footer .footer-identity { display: block; }
+.shelterbelt-footer .footer-wordmark { display: flex; align-items: center; gap: 9px; color: var(--sb-silo); font-weight: 750; font-size: 12px; letter-spacing: .13em; }
+.shelterbelt-footer .footer-identity p { margin: 8px 0 0 32px; color: var(--sb-muted); font: italic 18px var(--font-newsreader), Georgia, serif; }
+.shelterbelt-footer .footer-about { margin: 0; line-height: 1.65; max-width: 440px; color: var(--sb-muted); }
+.shelterbelt-footer .footer-links { display: flex; flex-wrap: wrap; gap: 12px 22px; grid-column: 1 / -1; }
+.shelterbelt-footer .footer-links a { color: var(--sb-silo); text-decoration: none; font-weight: 600; font-size: 12px; }
+.shelterbelt-footer .footer-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.shelterbelt-footer .footer-links a:focus-visible { outline: 2px solid var(--sb-harvest); outline-offset: 4px; }
+.shelterbelt-footer .footer-fineprint { grid-column: 1 / -1; margin: 0; color: var(--sb-muted); font-size: 11px; }
+@media (max-width: 720px) { .shelterbelt-footer { grid-template-columns: 1fr; gap: 20px; } .shelterbelt-footer .footer-links,.shelterbelt-footer .footer-fineprint { grid-column: 1; } }
