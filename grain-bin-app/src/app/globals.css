@@ -152,19 +152,22 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .shelterbelt-footer .footer-fineprint { grid-column: 1 / -1; margin: 0; color: var(--sb-muted); font-size: 11px; }
 @media (max-width: 720px) { .shelterbelt-footer { grid-template-columns: 1fr; gap: 20px; } .shelterbelt-footer .footer-links,.shelterbelt-footer .footer-fineprint { grid-column: 1; } }
 
-/* Compact market-wide peg composition below the two opening statistics. */
-.peg-overview { margin-top: 16px; padding: 24px 29px 19px; background: var(--sb-paper); border: 1px solid var(--sb-line); border-radius: 10px; }
-.peg-overview-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 19px; }
-.peg-overview-heading .card-overline { margin: 0 0 8px; }
-.peg-overview-heading h2 { margin: 0; font: 500 clamp(22px, 2.5vw, 30px)/1.2 var(--font-newsreader), Georgia, serif; }
-.peg-overview-heading > span { color: var(--sb-muted); font-size: 10px; letter-spacing: .08em; text-align: right; }
-.peg-overview-bar { display: flex; height: 14px; overflow: hidden; border-radius: 3px; background: var(--sb-line); }
+/* Compact peg mix. Hover or focus a label for details. */
+.peg-overview { margin-top: 16px; padding: 19px 26px 16px; background: var(--sb-paper); border: 1px solid var(--sb-line); border-radius: 10px; }
+.peg-overview-heading { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-bottom: 14px; }
+.peg-overview-heading .card-overline { margin: 0 0 5px; }
+.peg-overview-heading h2 { margin: 0; font: 500 clamp(21px, 2.4vw, 27px)/1.2 var(--font-newsreader), Georgia, serif; }
+.peg-overview-heading > span { color: var(--sb-muted); font-size: 10px; letter-spacing: .07em; text-align: right; }
+.peg-overview-bar { display: flex; width: 100%; height: 13px; overflow: hidden; border-radius: 3px; background: var(--sb-line); }
 .peg-overview-bar > div { min-width: 0; }
-.peg-overview-legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
-.peg-overview-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; font-size: 12px; }
-.peg-overview-label { display: inline-flex; align-items: center; gap: 7px; min-width: 55px; font-weight: 650; }
+.peg-overview-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 25px; margin-top: 11px; }
+.peg-overview-item { position: relative; }
+.peg-overview-label { display: inline-flex; align-items: center; gap: 7px; padding: 5px 0; border: 0; background: none; color: var(--sb-silo); font: 600 12px var(--font-inter), sans-serif; cursor: help; }
 .peg-overview-label i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-.peg-overview-item > strong { color: var(--sb-silo); }
-.peg-overview-item > span:last-child { color: var(--sb-muted); font-size: 11px; }
-.peg-overview-note { margin: 15px 0 0; font-size: 11px; line-height: 1.6; color: var(--sb-muted); }
-@media (max-width: 720px) { .peg-overview { padding: 23px 21px; } .peg-overview-heading { align-items: start; flex-direction: column; } .peg-overview-heading > span { text-align: left; } .peg-overview-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+.peg-overview-label:focus-visible { outline: 2px solid var(--sb-harvest); outline-offset: 3px; }
+.peg-overview-tooltip { position: absolute; z-index: 5; left: 0; bottom: calc(100% + 6px); display: none; min-width: 155px; padding: 10px 12px; border-radius: 5px; background: var(--sb-silo); color: var(--sb-paper); box-shadow: 0 6px 16px #171c172b; font: 12px var(--font-inter), sans-serif; white-space: nowrap; pointer-events: none; }
+.peg-overview-tooltip strong,.peg-overview-tooltip span { display: block; }
+.peg-overview-tooltip strong { font-size: 15px; margin-bottom: 4px; }
+.peg-overview-label:hover .peg-overview-tooltip,.peg-overview-label:focus .peg-overview-tooltip { display: block; }
+.peg-overview-note { margin: 10px 0 0; font-size: 10px; line-height: 1.5; color: var(--sb-muted); }
+@media (max-width: 720px) { .peg-overview { padding: 18px 20px; } .peg-overview-heading { align-items: start; flex-direction: column; } .peg-overview-heading > span { text-align: left; } .peg-overview-legend { gap: 8px 20px; } }
