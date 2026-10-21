@@ -59,12 +59,12 @@ export default async function Home() {
   const usdt = supplyFor("USDT");
   const usdc = supplyFor("USDC");
   const others = total - usdt - usdc;
-  // DefiLlama reports the USD equivalent in circulating.peggedUSD.
-  // Compare like-for-like USD values, even for EUR- and gold-pegged assets.
+  // Peg categories are distinct from collateral or reserve backing.
   const pegGroups = [
     { name: "USD", value: 0, color: "var(--sb-silo)" },
     { name: "EUR", value: 0, color: "var(--sb-harvest)" },
     { name: "Gold", value: 0, color: "var(--sb-sage)" },
+    { name: "BTC", value: 0, color: "var(--sb-rust)" },
     { name: "Other", value: 0, color: "var(--sb-oxblood)" },
   ];
   for (const coin of allAssets) {
@@ -77,7 +77,8 @@ export default async function Home() {
         ? (nativeSupply ?? 0) * coin.price
         : undefined;
     if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) continue;
-    const index = coin.pegType === "peggedUSD" ? 0 : coin.pegType === "peggedEUR" ? 1 : coin.pegType === "peggedGOLD" ? 2 : 3;
+    const peg = coin.pegType.toLowerCase();
+    const index = peg === "peggedusd" ? 0 : peg === "peggedeur" ? 1 : /gold|xau/.test(peg) ? 2 : /btc|bitcoin/.test(peg) ? 3 : 4;
     pegGroups[index].value += value;
   }
   const allPegTotal = pegGroups.reduce((sum, group) => sum + group.value, 0);
@@ -158,7 +159,7 @@ export default async function Home() {
               </div>)}
             </div>
           </> : <p className="empty-data">Peg composition data unavailable.</p>}
-          <p className="peg-overview-note">Includes USD, EUR, gold and other peg types tracked by DefiLlama. Values are compared in USD using available price quotes; assets without usable quotes are excluded. This is not a breakdown of reserve assets.</p>
+          <p className="peg-overview-note">Includes USD, EUR, gold, BTC and other peg types tracked by DefiLlama. Values are compared in USD using available price quotes; assets without usable quotes are excluded. This is not a breakdown of reserve assets.</p>
         </section>
 
         <section className="market-section" aria-labelledby="history-heading">
