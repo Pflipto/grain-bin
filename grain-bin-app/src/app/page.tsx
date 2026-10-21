@@ -210,7 +210,7 @@ export default async function Home() {
                 ].map((coin) => <div className="share-row" key={coin.name}>
                   <span className="share-label"><i style={{background:coin.color}}/>{coin.name}</span>
                   <span className="share-amount tabular">{money(coin.value)}</span>
-                  <strong className="tabular">{percent(coin.value,total)}%</strong>
+                  <strong className="tabular">{percent(coin.value,assetTotal)}%</strong>
                 </div>)}
               </div>
             </div>
