@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 type Coin = {
   id: string;
   name: string;
