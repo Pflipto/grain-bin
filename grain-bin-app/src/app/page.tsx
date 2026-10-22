@@ -243,7 +243,7 @@ export default async function Home() {
         </nav>
           </div>
           <div className="footer-story">
-            <p className="footer-about">Grain Bin, a Shelterbelt project, is an ongoing field study of the stablecoin market. A place to follow the numbers, ask better questions, and learn as we go.</p>
+            <p className="footer-about">Grain Bin is a Shelterbelt field study of the stablecoin market. A place to follow the numbers, understand what’s changing, and make a little more sense of a new kind of money.</p>
             <nav className="footer-links" aria-label="Project and data links">
               <a href="https://github.com/Pflipto/grain-bin" target="_blank" rel="noopener noreferrer">Source code <svg className="footer-external" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></a>
               <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer">Data: DefiLlama <svg className="footer-external" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></a>
