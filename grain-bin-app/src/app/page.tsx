@@ -1,45 +1,8 @@
 import Link from "next/link";
 import FieldGuide from "./FieldGuide";
-type Stablecoin = {
-  id: string;
-  name: string;
-  symbol: string;
-  pegType: string;
-  circulating?: Record<string, number>;
-  price?: number;
-};
-type StablecoinResponse = { peggedAssets: Stablecoin[] };
-type HistoricalRecord = {
-  date: string | number;
-  totalCirculatingUSD?: Record<string, number>;
-};
-
-async function getMarketData() {
-  const [assetsResponse, historyResponse] = await Promise.all([
-    fetch("https://stablecoins.llama.fi/stablecoins?includePrices=true", { next: { revalidate: 3600 } }),
-    fetch("https://stablecoins.llama.fi/stablecoincharts/all", { next: { revalidate: 3600 } }),
-  ]);
-  if (!assetsResponse.ok || !historyResponse.ok) throw new Error("Could not retrieve stablecoin market data");
-  const assets: StablecoinResponse = await assetsResponse.json();
-  const rawHistory: HistoricalRecord[] = await historyResponse.json();
-  const usdAssets = assets.peggedAssets.filter((coin) => coin.pegType === "peggedUSD");
-  const history = rawHistory.map((record) => ({
-    date: Number(record.date) * 1000,
-    supply: record.totalCirculatingUSD?.peggedUSD,
-  })).filter((record): record is { date: number; supply: number } =>
-    Number.isFinite(record.date) && typeof record.supply === "number" &&
-    Number.isFinite(record.supply) && record.supply > 0
-  ).sort((a, b) => a.date - b.date);
-  return { usdAssets, rawHistory, history };
-}
-
-const money = (value: number) => new Intl.NumberFormat("en-US", {
-  style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 2,
-}).format(value);
-const percent = (part: number, whole: number) => whole > 0 ? (100 * part / whole).toFixed(1) : "0.0";
-const shortDate = (date: number) => new Date(date).toLocaleDateString("en-US", {
-  month: "short", year: "numeric", timeZone: "UTC",
-});
+import { getCoinList, getTotalHistory } from "../lib/stablecoins";
+import { calculateDashboard } from "../lib/calc";
+import { money, percent, shortDate } from "../lib/format";
 
 function WheatMark({ size = 28 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" fill="currentColor">
@@ -53,55 +16,13 @@ function WheatMark({ size = 28 }: { size?: number }) {
 }
 
 export default async function Home() {
-  const { usdAssets, rawHistory, history } = await getMarketData();
-  const assetTotal = usdAssets.reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
-  const supplyFor = (symbol: string) => usdAssets.filter((coin) => coin.symbol === symbol)
-    .reduce((sum, coin) => sum + (coin.circulating?.peggedUSD ?? 0), 0);
-  const usdt = supplyFor("USDT");
-  const usdc = supplyFor("USDC");
-
-  // Historical snapshots contain USD-converted totals keyed by peg type.
-  // Do not infer zero when a peg type is absent from the source.
-  const snapshot = [...rawHistory].sort((a, b) => Number(b.date) - Number(a.date))
-    .find((point) => point.totalCirculatingUSD && Object.keys(point.totalCirculatingUSD).length > 0);
-  const pegTotals = snapshot?.totalCirculatingUSD ?? {};
-  const total = typeof pegTotals.peggedUSD === 'number' && pegTotals.peggedUSD > 0 ? pegTotals.peggedUSD : null;
-  const snapshotDate = snapshot ? Number(snapshot.date) * 1000 : null;
-  const hasAssetBreakdown = assetTotal > 0 && Number.isFinite(assetTotal);
-  const others = hasAssetBreakdown ? Math.max(0, assetTotal - usdt - usdc) : 0;
-  const sourceDifferencePct = total !== null && hasAssetBreakdown ? Math.abs(assetTotal - total) / total * 100 : null;
-  const pegGroups = [
-    { name: "USD", value: 0, color: "var(--sb-silo)", present: false },
-    { name: "EUR", value: 0, color: "var(--sb-harvest)", present: false },
-    { name: "Other", value: 0, color: "var(--sb-oxblood)", present: false },
-  ];
-  for (const [type, amount] of Object.entries(pegTotals)) {
-    if (typeof amount !== "number" || !Number.isFinite(amount) || amount < 0) continue;
-    const peg = type.toLowerCase();
-    if (/gold|xau|btc|bitcoin/.test(peg)) continue;
-    const index = peg === "peggedusd" ? 0 : peg === "peggedeur" ? 1 : 2;
-    pegGroups[index].value += amount;
-    pegGroups[index].present = true;
-  }
-  const allPegTotal = pegGroups.reduce((sum, group) => sum + group.value, 0);
-  const latest = snapshotDate !== null ? history.find(point => point.date === snapshotDate) : undefined;
-  const thirtyDaysAgo = latest ? latest.date - 30 * 86400000 : 0;
-  const previous = history.filter((point) => point.date <= thirtyDaysAgo).at(-1);
-  const growth = total !== null && latest && previous ? total - previous.supply : null;
-  const growthPct = growth !== null && previous && previous.supply > 0
-    ? growth / previous.supply * 100 : null;
-
-  const chartPoints = latest ? history.filter((point) => point.date <= latest.date && point.date >= latest.date - 365 * 86400000) : [];
-  const min = chartPoints.length ? Math.min(...chartPoints.map((point) => point.supply)) : 0;
-  const max = chartPoints.length ? Math.max(...chartPoints.map((point) => point.supply)) : 0;
-  const span = max - min || 1;
-  const firstDate = chartPoints[0]?.date ?? 0;
-  const dateSpan = (latest?.date ?? 0) - firstDate || 1;
-  const coordinates = chartPoints.map((point) => {
-    const x = 48 + (point.date - firstDate) / dateSpan * 704;
-    const y = 210 - (point.supply - min) / span * 165;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
+  const [assets, rawHistory] = await Promise.all([getCoinList(), getTotalHistory()]);
+  const usdAssets = assets.filter((coin) => coin.pegType === "peggedUSD");
+  const {
+    assetTotal, usdt, usdc, total, snapshotDate, hasAssetBreakdown, others,
+    sourceDifferencePct, pegGroups, allPegTotal, latest, growth, growthPct,
+    chartPoints, min, max, firstDate, coordinates,
+  } = calculateDashboard(usdAssets, rawHistory);
 
   return (
     <div className="site-shell">
