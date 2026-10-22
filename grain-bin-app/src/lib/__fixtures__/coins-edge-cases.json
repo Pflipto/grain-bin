@@ -1,0 +1,174 @@
+{
+  "peggedAssets": [
+    {
+      "id": "14",
+      "name": "USDD",
+      "symbol": "USDD",
+      "gecko_id": "usdd",
+      "priceSource": "defillama",
+      "pegType": "peggedUSD",
+      "pegMechanism": "crypto-backed",
+      "circulating": {
+        "peggedUSD": 1775452275.6242676
+      },
+      "circulatingPrevDay": {
+        "peggedUSD": 1768223739.7134972
+      },
+      "circulatingPrevWeek": {
+        "peggedUSD": 1764658044.0285406
+      },
+      "circulatingPrevMonth": {},
+      "chainCirculating": {
+        "BSC": {
+          "current": {
+            "peggedUSD": 21807393.64916257
+          },
+          "circulatingPrevDay": {
+            "peggedUSD": 21041858.87729756
+          },
+          "circulatingPrevWeek": {
+            "peggedUSD": 20062979.483039796
+          },
+          "circulatingPrevMonth": {}
+        },
+        "Bittorrent": {
+          "current": {
+            "peggedUSD": 615.9005498043362
+          },
+          "circulatingPrevDay": {
+            "peggedUSD": 615.9005498043362
+          },
+          "circulatingPrevWeek": {
+            "peggedUSD": 615.9005498043362
+          },
+          "circulatingPrevMonth": {}
+        },
+        "Ethereum": {
+          "current": {
+            "peggedUSD": 455745348.28825456
+          },
+          "circulatingPrevDay": {
+            "peggedUSD": 450400509.26788735
+          },
+          "circulatingPrevWeek": {
+            "peggedUSD": 451291513.48283553
+          },
+          "circulatingPrevMonth": {}
+        },
+        "Tron": {
+          "current": {
+            "peggedUSD": 1297898917.7863007
+          },
+          "circulatingPrevDay": {
+            "peggedUSD": 1296780755.6677625
+          },
+          "circulatingPrevWeek": {
+            "peggedUSD": 1293302935.1621153
+          },
+          "circulatingPrevMonth": {}
+        }
+      },
+      "chains": [
+        "Tron",
+        "Ethereum",
+        "BSC",
+        "Bittorrent"
+      ],
+      "price": 0.998397881912787
+    },
+    {
+      "id": "214",
+      "name": "USDX Money USDX",
+      "symbol": "USDX",
+      "gecko_id": "usdx-money-usdx",
+      "priceSource": "defillama",
+      "pegType": "peggedUSD",
+      "pegMechanism": "crypto-backed",
+      "circulating": {
+        "peggedUSD": 683442223.6265625
+      },
+      "circulatingPrevDay": {
+        "peggedUSD": 0
+      },
+      "circulatingPrevWeek": {
+        "peggedUSD": 0
+      },
+      "circulatingPrevMonth": {
+        "peggedUSD": 0
+      },
+      "chainCirculating": {
+        "BSC": {
+          "current": {
+            "peggedUSD": 528473467.5204725
+          },
+          "circulatingPrevDay": {},
+          "circulatingPrevWeek": {},
+          "circulatingPrevMonth": {}
+        },
+        "Ethereum": {
+          "current": {
+            "peggedUSD": 35949671.89970767
+          },
+          "circulatingPrevDay": {},
+          "circulatingPrevWeek": {},
+          "circulatingPrevMonth": {}
+        },
+        "Arbitrum": {
+          "current": {
+            "peggedUSD": 119019084.20638232
+          },
+          "circulatingPrevDay": {},
+          "circulatingPrevWeek": {},
+          "circulatingPrevMonth": {}
+        }
+      },
+      "chains": [
+        "BSC",
+        "Arbitrum",
+        "Ethereum"
+      ],
+      "price": null
+    },
+    {
+      "id": "388",
+      "name": "Initia iUSD",
+      "symbol": "iUSD",
+      "gecko_id": "iusd-2",
+      "priceSource": "defillama",
+      "pegType": "peggedUSD",
+      "pegMechanism": "crytpo-backed",
+      "circulating": {
+        "peggedUSD": 1689485.408779
+      },
+      "circulatingPrevDay": {
+        "peggedUSD": 1688452.940526
+      },
+      "circulatingPrevWeek": {
+        "peggedUSD": 1636034.077008
+      },
+      "circulatingPrevMonth": {
+        "peggedUSD": 1580675.121646
+      },
+      "chainCirculating": {
+        "Initia": {
+          "current": {
+            "peggedUSD": 1689485.408779
+          },
+          "circulatingPrevDay": {
+            "peggedUSD": 1688452.940526
+          },
+          "circulatingPrevWeek": {
+            "peggedUSD": 1636034.077008
+          },
+          "circulatingPrevMonth": {
+            "peggedUSD": 1580675.121646
+          }
+        }
+      },
+      "chains": [
+        "Initia"
+      ],
+      "price": null
+    }
+  ]
+}
