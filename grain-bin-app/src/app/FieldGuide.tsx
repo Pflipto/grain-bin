@@ -16,6 +16,7 @@ const entries: Entry[] = [
   { term: "Reserves", subtitle: "What backs a token", category: "Concepts", description: "Assets held or managed to support a stablecoin's value or redemptions. Composition, transparency and redemption rights differ by project." },
   { term: "Circulating supply", subtitle: "How much exists", category: "Concepts", description: "The amount of a token counted as circulating. Grain Bin uses DefiLlama's supply data to estimate the USD-pegged market." },
   { term: "Market share", subtitle: "A slice of the whole", category: "Concepts", description: "One token's circulating supply divided by the total supply in the selected market." },
+  { term: "Percentage points", subtitle: "A change in share", category: "Concepts", description: "The arithmetic difference between two percentages. A share rising from 60% to 65% increases by 5 percentage points, not 5 percent." },
   { term: "Concentration", subtitle: "The big players", category: "Concepts", description: "How much of a market is represented by a small number of participants. Grain Bin tracks the combined share of USDT and USDC." },
   { term: "Depeg", subtitle: "When the price wanders", category: "Concepts", description: "When a stablecoin's market price moves away from its intended reference value, temporarily or for longer." },
 ];
