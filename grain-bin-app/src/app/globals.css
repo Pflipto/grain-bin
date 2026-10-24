@@ -233,3 +233,19 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .chart-extrema { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
 
 .intro-stamp span { color: var(--sb-muted); }
+
+/* Compact momentum summary: value and definition share the lead row. */
+.momentum-headline { display: flex; align-items: center; gap: clamp(24px, 5vw, 72px); padding-block: 22px 24px; }
+.momentum-headline .hero-value { flex: 0 0 auto; margin: 0; }
+.momentum-headline .stat-caption { max-width: 32ch; margin: 0; font-size: 14px; line-height: 1.75; }
+.momentum-strip .momentum-gain { color: var(--sb-sage); }
+.range-metrics { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.range-metrics > div { flex: 0 1 auto; padding: 14px 18px; border: 1px solid var(--sb-line); border-radius: 8px; background: var(--sb-canvas); }
+.range-metrics dd { font-size: 22px; margin-top: 6px; }
+.range-metrics small { margin-top: 4px; }
+.momentum-section .hero-footer { margin-top: 18px; font-size: 11px; line-height: 1.8; }
+@media (max-width: 540px) {
+ .momentum-headline { flex-wrap: wrap; gap: 12px; padding-block: 18px 4px; }
+ .momentum-headline .stat-caption { max-width: none; font-size: 13px; }
+ .range-metrics > div { flex: 1 1 220px; padding: 12px 14px; }
+}
