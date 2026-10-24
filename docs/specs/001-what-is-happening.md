@@ -154,7 +154,7 @@ Move data access and arithmetic out of `page.tsx` so views stay small and testab
 
 ## 5. The views
 
-Placement top to bottom: header and intro (keep), A, B, C, D, E, then field note, Data notes, footer (keep), Field Guide drawer (keep). Reuse existing section markup and CSS classes.
+Placement top to bottom: compact journal heading, A, B, C, D, E, Data notes, footer (keep), Field Guide drawer (keep). Owner presentation update: use “FIELD NOTES: A NEW KIND OF MONEY” at the former eyebrow level; place the study mark beneath the edition; omit the intro paragraph and section 04 field note. Do not reintroduce that section in later view PRs. Reuse existing section markup and CSS classes.
 
 ### A. Momentum strip (replaces the hero stat and "Since last month")
 
@@ -262,7 +262,7 @@ Coins with missing/non-finite current or previous values are excluded from chang
 ### Demotions and edits to existing sections
 
 - **Peg composition:** remove the bar, legend, and tooltips. Keep the existing logic and reduce it to one factual sentence in Data notes (for example, "USD-pegged coins are {x}% of circulating value; EUR {y}%; other {z}%"). Owner-approved demotion.
-- **Notes from the field:** keep the voice. Update the closing question once view D exists, so it is one the page can almost answer. Draft new copy in the PR and get approval. Field notes stay short.
+- **Notes from the field:** removed in the owner’s final polish request. View D should explain its finding within its own caption rather than restoring the deleted section.
 - **Data notes:** add sentences for the reconciliation gap (view B), the chain-sum check (view C), and the denominator difference (view D).
 - **Field Guide:** read `FieldGuide.tsx` first and match its format. Add entries only for terms the new views introduce (for example, percentage points, chain, and any mechanism labels PR 0 confirms).
 
@@ -322,7 +322,7 @@ Each PR waits for the owner's review of the preview before the next begins.
 | Chain view size | Top 8 plus "Other chains" |
 | Event list | Seeds in view F, each source-verified first |
 | Classification labels | Provider labels with the one documented typo alias; no reserve claims |
-| Updated closing question | Drafted in PR 2 or 4 for approval |
+| Updated closing question | Not applicable; section 04 removed by owner |
 
 ---
 

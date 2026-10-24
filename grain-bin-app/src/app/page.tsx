@@ -47,13 +47,12 @@ export default async function Home() {
       </header>
 
       <main className="dashboard">
-        <div className="eyebrow"><span className="eyebrow-line"/> FIELD NOTES <span className="eyebrow-index">NO. 001 / STABLECOINS</span></div>
-        <div className="intro">
-          <div>
-            <h1>Notes on a<br/><em>New Kind of Money.</em></h1>
-            <p className="intro-description">A running study of stablecoins: how many dollars are out there, where they gather, and how the landscape is changing.</p>
+        <div className="journal-intro">
+          <div className="journal-heading"><span className="eyebrow-line" aria-hidden="true"/><h1>FIELD NOTES: A NEW KIND OF MONEY</h1></div>
+          <div className="journal-edition">
+            <p className="eyebrow-index">NO. 001 / STABLECOINS</p>
+            <div className="journal-stamp"><WheatMark size={28}/><span>AN ONGOING<br/>FIELD STUDY</span></div>
           </div>
-          <div className="intro-stamp"><WheatMark size={38}/><span>AN ONGOING<br/>FIELD STUDY</span></div>
         </div>
 
         <Momentum records={rawHistory} failed={historyResult.status === "rejected"} now={now}/>
@@ -93,14 +92,6 @@ export default async function Home() {
               <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
             </div>
           </div> : <div className="composition-card"><p className="card-overline">RECONCILIATION PENDING</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">Individual asset supply data is unavailable.</p></div>}
-        </section>
-
-        <section className="market-section field-note" aria-labelledby="field-note-heading">
-          <div className="section-kicker">04 <span/> NOTES FROM THE FIELD</div>
-          <h2 id="field-note-heading">A question worth keeping.</h2>
-          <p>{hasAssetBreakdown ? <>USDT and USDC make up <strong className="tabular">{percent(usdt! + usdc!, assetTotal)}%</strong> of the USD-pegged individual-asset supply counted here. That&apos;s an observation, not a prediction.</> : "Individual-asset supply data is currently unavailable."}</p>
-          <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
-          <p className="field-note-aside">For further study: follow changes in market share over time.</p>
         </section>
 
         <section className="market-section data-methodology" aria-label="Data methodology">
