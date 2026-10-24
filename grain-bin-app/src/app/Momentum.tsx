@@ -14,7 +14,7 @@ export default function Momentum({records,failed,now}:{records:HistoricalRecord[
       <h2 className="section-kicker" id="momentum-heading">01 <span/> IS THE MARKET GROWING?</h2>
       <div className="momentum-headline">
         <p className="hero-value tabular">{m.latest?money(m.latest.supply):"Unavailable"}</p>
-        <p className="stat-caption">USD-equivalent circulating value of USD-pegged stablecoins</p>
+        <p className="stat-caption">CIRCULATING VALUE OF USD-PEGGED STABLECOINS</p>
       </div>
       <dl className="momentum-strip tabular">
         {m.periods.map(({label,change})=><div key={label}>
