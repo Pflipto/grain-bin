@@ -84,7 +84,7 @@ PR 0 discovery completed Oct 22, 2026. Read [the discovery report](../discovery/
 
 The existing "Where the Dollars Gather" bar uses Silo for USDT and Harvest for USDC. Update it to this mapping in PR 2 so colours mean one thing everywhere. Colours that must be told apart also differ in lightness.
 
-**Layout:** server-rendered by default. No client JavaScript unless a view truly needs it. Real `<table>` elements for tables. SVG charts carry `role="img"` with an `aria-label` summarising the finding, plus a collapsed `<details>` "View the data" table. Must work at 390px width. Card radius 12px max. Charts are hand-rolled SVG like the existing one; share small helpers rather than adding a chart library.
+**Layout:** server-rendered by default. No client JavaScript unless a view truly needs it. Real `<table>` elements for tables. Static charts carry descriptive accessible labels. Owner-approved exception for the historical chart: use MIT-licensed Recharts with hover/touch tooltips and keyboard navigation; remove its "View the data" disclosure. Must work at 390px width. Card radius 12px max. Share small helpers; the historical chart uses the owner-requested Recharts client component, with data access and calculations kept server-side.
 
 ---
 
@@ -288,7 +288,7 @@ Compute both numbers and show both. Never force them to match. Coins with missin
 - No new dependency without prior approval.
 - No hardcoded market values in runtime code. Captured test fixtures are explicitly dated, isolated samples, never runtime fallbacks.
 - Each new view has loading-safe, empty, and error states.
-- Accessible: real tables, labelled SVGs, "View the data" fallback, text contrast per BRAND.md, usable at 390px.
+- Accessible: real tables, labelled charts, keyboard-accessible historical tooltips (owner-approved replacement for "View the data"), text contrast per BRAND.md, usable at 390px.
 - Checked against live data in a **Vercel preview**, as the README requires (a passing build does not replace this).
 - PR description follows the `AGENTS.md` report format.
 

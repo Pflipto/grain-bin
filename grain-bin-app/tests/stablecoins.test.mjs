@@ -241,3 +241,14 @@ test('identity is keyed by id: duplicate symbols remain distinct while conflicti
   assert.equal(conflict.excluded,1);
   assert.equal(conflict.total.supply,20);
 });
+
+
+test('interactive chart data inserts null gaps without inventing values or changing observations', async()=>{
+  const {historicalChartData}=await import('../src/lib/calc.ts');
+  const input=[{date:day,supply:100},{date:2*day,supply:110},{date:5*day,supply:120}];
+  assert.deepEqual(historicalChartData(input),[
+    {date:day,supply:100},{date:2*day,supply:110},{date:3*day,supply:null},{date:5*day,supply:120}
+  ]);
+  assert.equal(input.length,3);
+  assert.deepEqual(historicalChartData([]),[]);
+});

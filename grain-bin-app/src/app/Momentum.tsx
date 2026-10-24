@@ -1,4 +1,5 @@
-import { buildMomentum } from "../lib/calc";
+import HistoricalChart from "./HistoricalChart";
+import { buildMomentum, historicalChartData } from "../lib/calc";
 import type { HistoricalRecord } from "../lib/stablecoins";
 import { fullDate, money, signedMoney, signedPercent } from "../lib/format";
 
@@ -35,25 +36,9 @@ export default function Momentum({records,failed,now}:{records:HistoricalRecord[
     <div className="chart-card">
       {m.chartPoints.length>1 && m.high && m.low ? <>
         <p className="chart-topline">{fullDate(m.chartPoints[0].date)} – {fullDate(m.latest!.date)} UTC · Source: DefiLlama</p>
-        <svg viewBox="0 0 800 245" role="img" aria-label={`${caption} Chart from ${fullDate(m.chartPoints[0].date)} to ${fullDate(m.latest!.date)}. Gaps are left unconnected.`} className="supply-chart">
-          {[45,100,155,210].map(y=><line key={y} x1="48" x2="752" y1={y} y2={y} stroke="var(--sb-line)"/>)}
-          {m.segments.map((points,i)=><g key={i}>
-            <polyline points={points} fill="none" stroke="var(--sb-silo)" strokeWidth="5" strokeLinejoin="round"/>
-            <polyline points={points} fill="none" stroke="var(--sb-harvest)" strokeWidth="3" strokeLinejoin="round"/>
-          </g>)}
-          {[{point:m.high,label:"High"},{point:m.low,label:"Low"}].map(({point,label})=>{
-            const p=m.plot(point);
-            return <g key={label}><circle cx={p.x} cy={p.y} r="5" fill="var(--sb-silo)"/><text x={p.x} y={label==="High"?p.y-15:p.y+24} textAnchor={p.x>600?"end":p.x<200?"start":"middle"} fill="var(--sb-silo)" fontSize="14">{label} {money(point.supply)} · {fullDate(point.date)}</text></g>;
-          })}
-        </svg>
+        <HistoricalChart points={historicalChartData(m.chartPoints)} high={m.high} low={m.low}
+          description={`${caption} Historical USD-pegged circulating value. Dates are UTC; missing observations are left as gaps.`}/>
         <p className="data-note chart-extrema tabular"><span>High {money(m.high.supply)} · {fullDate(m.high.date)}</span><span>Low {money(m.low.supply)} · {fullDate(m.low.date)}</span></p>
-        <details className="data-disclosure"><summary>View the data</summary>
-          <div className="table-scroll" role="region" aria-label="Historical circulating value data" tabIndex={0}>
-            <table className="market-table"><caption>Historical USD-pegged circulating value · DefiLlama · UTC</caption><thead><tr><th scope="col">Date</th><th scope="col">USD value</th></tr></thead>
-              <tbody>{m.chartPoints.map(p=><tr key={p.date}><th scope="row">{fullDate(p.date)}</th><td>{new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(p.supply)}</td></tr>)}</tbody>
-            </table>
-          </div>
-        </details>
       </>:<p className="empty-data">{failed?"Historical data could not be retrieved.":"Not enough valid historical data to chart."}</p>}
     </div>
   </section>;

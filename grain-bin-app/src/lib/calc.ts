@@ -151,3 +151,14 @@ export function pegStatus(deviation:number|null): string {
   if(deviation===null || !Number.isFinite(deviation)) return "No price";
   return Math.abs(deviation)>OFF_PEG_THRESHOLD_PCT+1e-10 ? "Off peg" : "Near $1";
 }
+
+/** A null observation breaks the library line across absent days; never fill zero. */
+export function historicalChartData(points: HistoryPoint[]): {date:number; supply:number|null}[] {
+  const result: {date:number; supply:number|null}[]=[];
+  for(const [index,point] of points.entries()) {
+    const previous=points[index-1];
+    if(previous && point.date-previous.date>DAY) result.push({date:previous.date+DAY,supply:null});
+    result.push({date:point.date,supply:point.supply});
+  }
+  return result;
+}

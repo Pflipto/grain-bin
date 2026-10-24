@@ -95,7 +95,7 @@ The dashboard requests public DefiLlama endpoints at runtime, so an internet con
 
 ## Reading the new market views
 
-The momentum view compares historical USD-valued snapshots over 7, 30, and 90 days, year to date, and one year. It labels stale snapshots and unavailable baselines, and leaves historical chart gaps unconnected. Expand “View the data” for the chart’s dated values.
+The momentum view compares historical USD-valued snapshots over 7, 30, and 90 days, year to date, and one year. It labels stale snapshots and unavailable baselines, and leaves historical chart gaps unconnected. The MIT-licensed Recharts graph supports hover, touch, and arrow-key exploration of exact dated values; dates are UTC. Missing daily observations break the line.
 
 The largest-coins table ranks by reported circulating value, not by biggest change. Its provider-month comparisons and the historical headline use different valuation methods, so their difference is shown rather than forced to match. Partial change totals and unavailable values are labelled explicitly.
 
