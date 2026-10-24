@@ -1,23 +1,25 @@
 "use client";
 
 import {
-  CartesianGrid, Line, LineChart, ReferenceDot, ResponsiveContainer,
+  CartesianGrid, Line, LineChart, ReferenceDot, ReferenceLine, ResponsiveContainer,
   Tooltip, XAxis, YAxis,
 } from "recharts";
 import type { HistoryPoint } from "../lib/calc";
 import { fullDate, money, shortDate } from "../lib/format";
+import type { MarketEvent } from "../lib/timeline";
 
 type Props = {
   points: {date:number; supply:number|null}[];
   high: HistoryPoint;
   low: HistoryPoint;
   description: string;
+  events?: MarketEvent[];
 };
 const exactMoney = new Intl.NumberFormat("en-US", {
   style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2,
 });
 
-export default function HistoricalChart({points,high,low,description}:Props) {
+export default function HistoricalChart({points,high,low,description,events=[]}:Props) {
   return <div className="interactive-history">
     <div className="history-plot">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:900,height:340}}>
@@ -39,6 +41,8 @@ export default function HistoricalChart({points,high,low,description}:Props) {
           <Line type="linear" dataKey="supply" name="Circulating value" stroke="var(--sb-silo)" strokeWidth={2}
             dot={false} activeDot={{r:5,fill:"var(--sb-harvest)",stroke:"var(--sb-silo)",strokeWidth:2}}
             connectNulls={false} isAnimationActive={false}/>
+          {events.map((event,index)=><ReferenceLine key={event.id} x={Date.parse(`${event.date}T00:00:00Z`)} stroke="var(--sb-muted)" strokeDasharray="4 4"
+            label={{value:String(index+1),position:"insideBottomRight",fill:"var(--sb-silo)",fontSize:11}}/>)}
           <ReferenceDot x={high.date} y={high.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
           <ReferenceDot x={low.date} y={low.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
         </LineChart>
