@@ -19,11 +19,10 @@ const exactMoney = new Intl.NumberFormat("en-US", {
 
 export default function HistoricalChart({points,high,low,description}:Props) {
   return <div className="interactive-history">
-    <p id="history-chart-help" className="data-note chart-help">Hover or touch to inspect a snapshot. With the chart focused, use the left and right arrow keys.</p>
     <div className="history-plot">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:900,height:340}}>
         <LineChart data={points} margin={{top:18,right:16,bottom:12,left:0}}
-          accessibilityLayer aria-label={description} aria-describedby="history-chart-help">
+          accessibilityLayer aria-label={`${description} Use left and right arrow keys to inspect snapshots.`}>
           <CartesianGrid vertical={false} stroke="var(--sb-line)"/>
           <XAxis dataKey="date" type="number" domain={["dataMin","dataMax"]}
             tickFormatter={shortDate} minTickGap={44} tickLine={false} axisLine={false}

@@ -59,7 +59,7 @@ export default async function Home() {
         </div>
 
         <Momentum records={rawHistory} failed={historyResult.status === "rejected"} now={now}/>
-        <Movers assets={assets} failed={coinsResult.status === "rejected"} responseDate={responseDate} historicalChange={momentum.periods[1].change?.amount ?? null}/>
+        <Movers assets={assets} failed={coinsResult.status === "rejected"} historicalChange={momentum.periods[1].change?.amount ?? null}/>
 
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">

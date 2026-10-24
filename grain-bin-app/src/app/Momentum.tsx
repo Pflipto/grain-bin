@@ -26,8 +26,10 @@ export default function Momentum({records,failed,now}:{records:HistoricalRecord[
         <div><dt>Distance from {windowLabel} high</dt><dd>{m.distanceFromHigh===0?"At the high":signedPercent(m.distanceFromHigh!)}<small>{fullDate(m.high.date)}</small></dd></div>
         <div><dt>Position in {windowLabel} range</dt><dd>{m.rangePosition!==null?`${m.rangePosition.toFixed(1)}%`:"n/a — flat range"}<small>Low {fullDate(m.low.date)} · High {fullDate(m.high.date)}</small></dd></div>
       </dl>}
+      <div className="momentum-provenance">
       <p className="data-note">Changes compare dated USD-valued snapshots; they are not necessarily token issuance or redemptions. Baselines more than 48 hours before the target are unavailable. {m.stale?"This snapshot was over 48 hours old when the page was generated.":""}</p>
       <div className="hero-footer">Source: DefiLlama · {failed?"History could not be retrieved.":m.snapshotDate!==null?`Snapshot: ${fullDate(m.snapshotDate)} UTC${m.stale?" · Stale snapshot":""}`:"Snapshot unavailable"} · Checked hourly</div>
+      </div>
     </div>
     <div className="section-heading momentum-chart-heading">
       <div><p className="section-kicker">THE LONG VIEW</p><h3>The Shape of Things</h3></div>
@@ -38,7 +40,7 @@ export default function Momentum({records,failed,now}:{records:HistoricalRecord[
         <p className="chart-topline">{fullDate(m.chartPoints[0].date)} – {fullDate(m.latest!.date)} UTC · Source: DefiLlama</p>
         <HistoricalChart points={historicalChartData(m.chartPoints)} high={m.high} low={m.low}
           description={`${caption} Historical USD-pegged circulating value. Dates are UTC; missing observations are left as gaps.`}/>
-        <p className="data-note chart-extrema tabular"><span>High {money(m.high.supply)} · {fullDate(m.high.date)}</span><span>Low {money(m.low.supply)} · {fullDate(m.low.date)}</span></p>
+        <p className="data-note chart-extrema tabular"><span>Low {money(m.low.supply)} · {fullDate(m.low.date)}</span><span>High {money(m.high.supply)} · {fullDate(m.high.date)}</span></p>
       </>:<p className="empty-data">{failed?"Historical data could not be retrieved.":"Not enough valid historical data to chart."}</p>}
     </div>
   </section>;

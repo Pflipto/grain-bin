@@ -187,10 +187,8 @@ h1 em { font-weight: 400; color: #8c5e35; }
 @media (max-width: 720px) { .peg-overview { padding: 18px 20px; } .peg-overview-heading { align-items: start; flex-direction: column; } .peg-overview-heading > span { text-align: left; } .peg-overview-legend { gap: 8px 20px; } }
 
 /* Question-led market views reuse the existing editorial cards and rules. */
-.momentum-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 24px 0; border-block: 1px solid var(--sb-line); }
-.momentum-strip > div { padding: 20px 16px; border-right: 1px solid var(--sb-line); }
-.momentum-strip > div:first-child { padding-left: 0; }
-.momentum-strip > div:last-child { border-right: 0; }
+.momentum-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 24px 0; gap: 12px; }
+.momentum-strip > div { padding: 14px 18px; border: 1px solid var(--sb-line); border-radius: 8px; background: var(--sb-canvas); }
 .momentum-strip dt,.range-metrics dt { color: var(--sb-muted); font-size: 12px; line-height: 1.5; }
 .momentum-strip dd { margin: 10px 0 0; font-size: clamp(14px, 1.5vw, 19px); font-weight: 600; line-height: 1.5; }
 .momentum-strip dd span,.momentum-strip dd small,.range-metrics small { display: block; }
@@ -219,13 +217,9 @@ h1 em { font-weight: 400; color: #8c5e35; }
 @media (max-width: 900px) {
  .momentum-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
  .momentum-strip > div { padding: 16px 12px; }
- .momentum-strip > div:first-child { padding-left: 12px; }
 }
 @media (max-width: 540px) {
  .momentum-strip { grid-template-columns: 1fr 1fr; }
- .momentum-strip > div { border-bottom: 1px solid var(--sb-line); }
- .momentum-strip > div:nth-child(even) { border-right: 0; }
- .momentum-strip > div:last-child { border-bottom: 0; }
  .range-metrics { grid-template-columns: 1fr; gap: 20px; }
  .hero-footer { flex-wrap: wrap; line-height: 1.8; }
  .chart-card { padding-inline: 12px; }
@@ -238,7 +232,7 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .momentum-headline { display: flex; align-items: center; gap: clamp(24px, 5vw, 72px); padding-block: 22px 24px; }
 .momentum-headline .hero-value { flex: 0 0 auto; margin: 0; }
 .momentum-headline .stat-caption { max-width: 32ch; margin: 0; font-size: 14px; line-height: 1.75; }
-.momentum-strip .momentum-gain { color: var(--sb-sage); }
+.momentum-strip .momentum-gain { color: color-mix(in srgb, var(--sb-sage) 90%, var(--sb-silo)); }
 .range-metrics { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
 .range-metrics > div { flex: 0 1 auto; padding: 14px 18px; border: 1px solid var(--sb-line); border-radius: 8px; background: var(--sb-canvas); }
 .range-metrics dd { font-size: 22px; margin-top: 6px; }
@@ -251,7 +245,6 @@ h1 em { font-weight: 400; color: #8c5e35; }
 }
 
 .history-plot { width: 100%; height: 340px; min-width: 0; font-variant-numeric: tabular-nums; }
-.chart-help { margin-block: 8px 16px; }
 .history-plot .recharts-surface:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; border-radius: 4px; }
 .history-plot .recharts-tooltip-wrapper { z-index: 2; font-variant-numeric: tabular-nums; }
 @media (max-width: 540px) {
@@ -261,3 +254,7 @@ h1 em { font-weight: 400; color: #8c5e35; }
 
 .history-plot .recharts-tooltip-item-value { display: block; font-weight: 600; }
 .history-plot .recharts-tooltip-item-separator { display: none; }
+
+.momentum-provenance { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--sb-line); }
+.momentum-provenance .data-note { margin-block: 0 8px; }
+.momentum-provenance .hero-footer { border-top: 0; padding-top: 0; margin-top: 0; }
