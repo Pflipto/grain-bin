@@ -281,3 +281,22 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .table-sort:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; border-radius: 3px; }
 .coin-table .not-applicable { color: var(--sb-muted); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { .coin-table tbody tr { transition: none; } }
+
+/* Compact journal heading, with the study mark nested beneath its edition. */
+.journal-intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 24px; padding-bottom: 32px; }
+.journal-heading { display: flex; align-items: baseline; gap: 13px; }
+.journal-heading .eyebrow-line { flex: 0 0 26px; align-self: center; }
+.journal-heading h1 { margin: 0; color: var(--sb-silo); font: 600 clamp(12px, 1.2vw, 16px)/1.6 var(--font-inter), Arial, sans-serif; letter-spacing: .12em; }
+.journal-edition { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; color: var(--sb-muted); }
+.journal-edition .eyebrow-index { margin: 0; font-size: 10px; line-height: 1.6; letter-spacing: .12em; }
+.journal-stamp { display: flex; align-items: center; gap: 8px; color: var(--sb-harvest); }
+.journal-stamp span { color: var(--sb-muted); font-size: 9px; line-height: 1.7; letter-spacing: .13em; }
+@media (max-width: 540px) {
+ .journal-intro { grid-template-columns: minmax(0, 1fr) 106px; gap: 16px; padding-bottom: 24px; }
+ .journal-heading .eyebrow-line { display: none; }
+ .journal-heading h1 { font-size: 12px; letter-spacing: .08em; }
+ .journal-edition .eyebrow-index { font-size: 9px; letter-spacing: .04em; }
+ .journal-stamp { gap: 6px; }
+ .journal-stamp svg { width: 22px; height: 22px; }
+ .journal-stamp span { font-size: 8px; letter-spacing: .08em; }
+}
