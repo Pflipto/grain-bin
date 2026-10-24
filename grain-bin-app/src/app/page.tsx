@@ -48,7 +48,7 @@ export default async function Home() {
 
       <main className="dashboard">
         <div className="journal-intro">
-          <div className="journal-heading"><span className="eyebrow-line" aria-hidden="true"/><h1>FIELD NOTES: A NEW KIND OF MONEY</h1></div>
+          <div className="journal-heading"><span className="eyebrow-line" aria-hidden="true"/><h1>FIELD NOTES: STABLE COINS, A NEW KIND OF MONEY</h1></div>
           <div className="journal-edition">
             <p className="eyebrow-index">NO. 001 / STABLECOINS</p>
             <div className="journal-stamp"><WheatMark size={28}/><span>AN ONGOING<br/>FIELD STUDY</span></div>
