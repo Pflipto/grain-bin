@@ -140,17 +140,31 @@ h1 em { font-weight: 400; color: #8c5e35; }
 @media (max-width: 720px) { .field-guide-trigger { right: 14px; bottom: 14px; } .field-guide-top { padding: 25px 22px 18px; } .field-guide-search-label { margin-left: 22px; } .field-guide-search { margin-left: 22px; margin-right: 22px; } .field-guide-results { padding-left: 22px; padding-right: 22px; } }
 
 /* Shelterbelt's colophon */
-.shelterbelt-footer { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px 48px; align-items: start; letter-spacing: normal; font-size: 13px; }
-.shelterbelt-footer .footer-identity { display: block; }
-.shelterbelt-footer .footer-wordmark { display: flex; align-items: center; gap: 9px; color: var(--sb-silo); font-weight: 750; font-size: 12px; letter-spacing: .13em; }
-.shelterbelt-footer .footer-identity p { margin: 8px 0 0 32px; color: var(--sb-muted); font: italic 18px var(--font-newsreader), Georgia, serif; }
-.shelterbelt-footer .footer-about { margin: 0; line-height: 1.65; max-width: 440px; color: var(--sb-muted); }
-.shelterbelt-footer .footer-links { display: flex; flex-wrap: wrap; gap: 12px 22px; grid-column: 1 / -1; }
-.shelterbelt-footer .footer-links a { color: var(--sb-silo); text-decoration: none; font-weight: 600; font-size: 12px; }
+.shelterbelt-footer { display: grid; grid-template-columns: minmax(180px, .8fr) minmax(0, 1.6fr); gap: 24px clamp(32px, 4vw, 64px); align-items: start; padding-block: 30px 38px; letter-spacing: normal; font-size: 16px; }
+.shelterbelt-footer .footer-identity { min-width: 0; }
+.shelterbelt-footer .footer-wordmark { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--sb-silo); text-decoration: none; font-weight: 750; font-size: 14px; letter-spacing: .13em; }
+.shelterbelt-footer .footer-coordinates { margin: 14px 0 0 38px; color: var(--sb-muted); font-size: 12px; line-height: 1.8; font-variant-numeric: tabular-nums; }
+.shelterbelt-footer .footer-coordinates span { margin-inline: 4px; }
+.shelterbelt-footer .footer-socials { display: flex; gap: 4px; margin: 8px 0 0 26px; }
+.shelterbelt-footer .footer-socials a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--sb-muted); }
+.shelterbelt-footer .footer-socials svg { width: 20px; height: 20px; fill: currentColor; color: inherit; }
+.shelterbelt-footer .footer-socials a:hover { color: var(--sb-silo); }
+.shelterbelt-footer .footer-story { min-width: 0; }
+.shelterbelt-footer .footer-about { text-align: right; margin: 0; line-height: 1.75; color: var(--sb-muted); }
+.shelterbelt-footer .footer-links { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0 24px; margin-top: 12px; }
+.shelterbelt-footer .footer-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--sb-silo); text-decoration: none; font-weight: 500; font-size: 13px; }
+.shelterbelt-footer .footer-external { width: 12px; height: 12px; margin-left: 6px; fill: none; stroke: currentColor; stroke-width: 1.5; color: inherit; }
 .shelterbelt-footer .footer-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.shelterbelt-footer .footer-links a:focus-visible { outline: 2px solid var(--sb-harvest); outline-offset: 4px; }
-.shelterbelt-footer .footer-fineprint { grid-column: 1 / -1; margin: 0; color: var(--sb-muted); font-size: 11px; }
-@media (max-width: 720px) { .shelterbelt-footer { grid-template-columns: 1fr; gap: 20px; } .shelterbelt-footer .footer-links,.shelterbelt-footer .footer-fineprint { grid-column: 1; } }
+.shelterbelt-footer a:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 4px; }
+.shelterbelt-footer .footer-fineprint { text-align: right; margin: 12px 0 0; color: var(--sb-muted); font-size: 12px; line-height: 1.7; }
+@media (max-width: 760px) {
+  .shelterbelt-footer { grid-template-columns: 1fr; gap: 24px; padding-block: 28px; }
+  .shelterbelt-footer .footer-wordmark { font-size: 13px; }
+  .shelterbelt-footer .footer-coordinates { margin-left: 0; }
+  .shelterbelt-footer .footer-socials { margin-left: -12px; }
+  .shelterbelt-footer .footer-story { border-top: 1px solid var(--sb-line); padding-top: 20px; }
+}
+
 
 /* Compact peg mix. Hover or focus a label for details. */
 .peg-overview { margin-top: 16px; padding: 19px 26px 16px; background: var(--sb-paper); border: 1px solid var(--sb-line); border-radius: 10px; }
