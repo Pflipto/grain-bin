@@ -4,8 +4,8 @@ import FieldGuide from "./FieldGuide";
 import Momentum from "./Momentum";
 import Movers from "./Movers";
 import { getDashboardSnapshot } from "../lib/stablecoins";
-import { calculateDashboard, buildMomentum, buildMovers } from "../lib/calc";
-import { money, percent, fullDate, utcTime } from "../lib/format";
+import { calculateDashboard, buildMovers } from "../lib/calc";
+import { money, percent, fullDate } from "../lib/format";
 
 function WheatMark({ size = 28 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" fill="currentColor">
@@ -25,10 +25,8 @@ export default async function Home() {
   cacheLife({stale:300,revalidate:3600,expire:7200});
   const {coins:coinsResult, history:historyResult, generatedAt:now} = await getDashboardSnapshot();
   const assets = coinsResult.status === "fulfilled" ? coinsResult.value.coins : [];
-  const responseDate = coinsResult.status === "fulfilled" ? coinsResult.value.responseDate : null;
   const rawHistory = historyResult.status === "fulfilled" ? historyResult.value : [];
   const usdAssets = assets.filter(coin => coin && coin.pegType === "peggedUSD");
-  const momentum = buildMomentum(rawHistory, now);
   const movers = buildMovers(assets);
   const {
     assetTotal, usdt, usdc, others, hasAssetBreakdown,
@@ -59,14 +57,14 @@ export default async function Home() {
         </div>
 
         <Momentum records={rawHistory} failed={historyResult.status === "rejected"} now={now}/>
-        <Movers assets={assets} failed={coinsResult.status === "rejected"} historicalChange={momentum.periods[1].change?.amount ?? null}/>
+        <Movers assets={assets} failed={coinsResult.status === "rejected"}/>
 
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
             <div><div className="section-kicker">03 <span/> WHO&apos;S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
             <span className="section-meta">SHARE OF CURRENT USD-PEGGED TOKEN SUPPLY</span>
           </div>
-          <p className="data-note">Source: DefiLlama · {responseDate !== null ? `API response dated ${utcTime(responseDate)}` : "Response date unavailable"}. Source observation times are unknown. {movers.excluded > 0 ? `${movers.excluded} coins are excluded; shares describe available values only.` : ""}</p>
+          {movers.excluded > 0 && <p className="data-note">{movers.excluded} coins are excluded; shares describe available values only.</p>}
           {hasAssetBreakdown ? <div className="composition-grid">
             <div className="composition-card">
               <p className="card-overline">SHARE BY STABLECOIN</p>

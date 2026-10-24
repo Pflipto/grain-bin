@@ -199,13 +199,13 @@ Placement top to bottom: header and intro (keep), A, B, C, D, E, then field note
 | Price | `price` as reported; missing shows "No price", never assumed $1 |
 | vs $1 | `(price − 1) × 100` as a signed percent; see threshold below |
 
-**Off-peg label:** a named constant `OFF_PEG_THRESHOLD_PCT = 0.5`. Within it, show "Near $1"; beyond it, show "Off peg" with the signed deviation. This is a snapshot only: say so ("current price only; past depegs are not shown"). **OWNER APPROVED:** 0.5% (Oct 23, 2026).
+**Owner presentation update:** remove repeated Near $1/Off peg labels and the separate vs-$1 column. Show the signed deviation beneath the price using the same green/red approach as momentum. The previously approved 0.5% threshold no longer drives a visible label. Quote freshness remains unknown; this does not show historical depegs.
 
-**Reconciliation line under the table (required):**
-*"Available token-level provider-month changes sum to {x}. The historical 30-day USD-valued series changed {y}. These measures differ by {z}; valuation, timing, and coverage may differ (see Data notes)."*
-Compute both numbers and show both. Never force them to match. Coins with missing/non-finite current or previous values are excluded from change sums and counted. Valid zero previous values contribute dollar change but have unavailable percentage change. All-other and total rows label partial sums explicitly, include counts, and never sum percentage changes. All-missing aggregates are unavailable, not zero. Price/peg cells on aggregate rows are not applicable. Missing current values are excluded from ranking/share denominators and their count is disclosed.
+**Owner presentation update:** omit the derived reconciliation paragraph below the table. Preserve the distinction between provider-month and historical measures in Data notes; never force them to match.
 
-**Notes:** server-rendered `<table>`, default sort by supply descending, no client interactivity in v1. State that DefiLlama defines the previous-month baseline relative to each coin’s latest observation: inspected source selects on/before 30 days earlier within a 36-hour search window. Actual source observation times are not exposed. “Off peg” describes the available quote only, not a verified live incident; price-source freshness is unknown.
+Coins with missing/non-finite current or previous values are excluded from change sums and counted. Valid zero previous values contribute dollar change but have unavailable percentage change. All-other and total rows label partial sums explicitly, include counts, and never sum percentage changes. All-missing aggregates are unavailable, not zero. Price/peg cells on aggregate rows are not applicable. Missing current values are excluded from ranking/share denominators and their count is disclosed.
+
+**Notes:** semantic table rendered by the owner-requested MIT TanStack React Table client component. Default sort is circulating value descending. Sort only the selected top ten; keep all-other and total rows fixed in the footer. Stack dollar and percentage changes in one cell, without Up/Down words; use signed green/red values like momentum. State that DefiLlama defines the previous-month baseline relative to each coin’s latest observation: inspected source selects on/before 30 days earlier within a 36-hour search window. Actual source observation times are not exposed. “Off peg” describes the available quote only, not a verified live incident; price-source freshness is unknown.
 
 ### C. Where it lives (chains)
 

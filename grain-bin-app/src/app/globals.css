@@ -232,7 +232,7 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .momentum-headline { display: flex; align-items: center; gap: clamp(24px, 5vw, 72px); padding-block: 22px 24px; }
 .momentum-headline .hero-value { flex: 0 0 auto; margin: 0; }
 .momentum-headline .stat-caption { max-width: 32ch; margin: 0; font-size: 14px; line-height: 1.75; }
-.momentum-strip .momentum-gain { color: color-mix(in srgb, var(--sb-sage) 90%, var(--sb-silo)); }
+.momentum-strip .momentum-gain,.metric-gain { color: color-mix(in srgb, var(--sb-sage) 90%, var(--sb-silo)); }
 .range-metrics { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
 .range-metrics > div { flex: 0 1 auto; padding: 14px 18px; border: 1px solid var(--sb-line); border-radius: 8px; background: var(--sb-canvas); }
 .range-metrics dd { font-size: 22px; margin-top: 6px; }
@@ -258,3 +258,26 @@ h1 em { font-weight: 400; color: #8c5e35; }
 .momentum-provenance { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--sb-line); }
 .momentum-provenance .data-note { margin-block: 0 8px; }
 .momentum-provenance .hero-footer { border-top: 0; padding-top: 0; margin-top: 0; }
+
+/* TanStack supplies table state; the visual treatment stays editorial. */
+.coin-table { min-width: 760px; }
+.coin-table thead { background: var(--sb-canvas); }
+.coin-table th,.coin-table td { padding: 18px 20px; vertical-align: middle; }
+.coin-table th:first-child { width: 24%; min-width: 180px; }
+.coin-table tbody tr { background: var(--sb-paper); transition: background-color .12s ease; }
+.coin-table tbody tr:hover { background: var(--sb-canvas); }
+.coin-table tbody td { font-size: 14px; }
+.coin-table tbody th { font-size: 14px; font-weight: 600; }
+.coin-table tfoot { background: var(--sb-canvas); }
+.coin-table tfoot td { font-size: 13px; }
+.coin-table .table-metric > span { font-weight: 500; }
+.coin-table .table-metric small { margin-top: 4px; font-size: 12px; }
+.coin-table small.decline { color: var(--sb-rust); }
+.coin-table small.metric-gain { color: color-mix(in srgb, var(--sb-sage) 90%, var(--sb-silo)); }
+.table-sort { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 44px; width: 100%; border: 0; padding: 0; background: none; color: var(--sb-muted); font: inherit; line-height: 1.5; cursor: pointer; }
+.coin-table th:first-child .table-sort { justify-content: flex-start; }
+.table-sort > span { flex-shrink: 0; }
+.table-sort:hover { color: var(--sb-silo); }
+.table-sort:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; border-radius: 3px; }
+.coin-table .not-applicable { color: var(--sb-muted); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .coin-table tbody tr { transition: none; } }
