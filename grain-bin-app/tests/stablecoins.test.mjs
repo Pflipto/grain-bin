@@ -37,7 +37,7 @@ test('historical headline and monthly change do not use the token-list denominat
   assert.notEqual(model.total, model.assetTotal); // Fixture coins are deliberately a partial universe.
 });
 
-test('legacy monthly lookup selects the last observation on/before the target and does not use a later point', () => {
+test('monthly lookup selects the last observation on/before the target and does not use a later point', () => {
   const m = calculateDashboard([], [record(1,100),record(9,120),record(11,150),record(40,200)]);
   assert.equal(m.growth,80);
   assert.equal(m.growthPct,80/120*100);
@@ -121,4 +121,123 @@ test('fetch failures and malformed containers reject rather than inventing empty
   globalThis.fetch=async()=>new Response('not json');
   await assert.rejects(getTotalHistory(),SyntaxError);
   await assert.rejects(getCoinHistory(' '),/id is required/);
+});
+
+test('momentum rejects distant baselines, uses UTC year-to-date and a full-year baseline', async () => {
+  const {buildMomentum,changeOver,DAY}=await import('../src/lib/calc.ts');
+  const latest={date:Date.UTC(2026,9,22),supply:200};
+  assert.equal(changeOver([{date:latest.date-34*DAY,supply:100},latest],latest,30),null);
+  assert.equal(changeOver([{date:latest.date-32*DAY,supply:100},latest],latest,30).amount,100);
+  const data=[{date:Date.UTC(2025,11,31)/1000,totalCirculatingUSD:{peggedUSD:125}},
+    {date:(latest.date-365*DAY)/1000,totalCirculatingUSD:{peggedUSD:100}},
+    {date:latest.date/1000,totalCirculatingUSD:{peggedUSD:200}}];
+  const m=buildMomentum(data,latest.date);
+  assert.equal(m.periods[3].change.amount,75);
+  assert.equal(m.periods[4].change.amount,100);
+  assert.equal(m.fullYear,true);
+});
+
+test('flat ranges, tied extrema, stale snapshots and gaps are represented explicitly', async()=>{
+  const {buildMomentum,DAY}=await import('../src/lib/calc.ts');
+  const m=buildMomentum([record(1,100),record(2,100),record(5,100)],8*DAY);
+  assert.equal(m.high.date,5*DAY);
+  assert.equal(m.low.date,5*DAY);
+  assert.equal(m.rangePosition,null);
+  assert.equal(m.distanceFromHigh,0);
+  assert.equal(m.fullYear,false);
+  assert.equal(m.stale,true);
+  assert.equal(m.segments.length,2);
+});
+
+test('conflicting duplicate snapshots cannot produce a current headline', async()=>{
+  const {buildMomentum}=await import('../src/lib/calc.ts');
+  assert.equal(normalizeHistory([record(1,100),record(1,100)]).length,1);
+  const m=buildMomentum([record(1,100),record(2,110),record(2,120)],3*day);
+  assert.equal(m.latest,undefined);
+  assert.equal(m.snapshotDate,2*day);
+  assert.equal(normalizeHistory([record(1,100),record(1,null)]).length,0);
+});
+
+const coin=(id,current,previous,price=1)=>({id:String(id),name:`Coin ${id}`,symbol:`C${id}`,pegType:'peggedUSD',circulating:{peggedUSD:current},circulatingPrevMonth:{peggedUSD:previous},price});
+test('largest-coins ranking, remainder and total reconcile without multiplying price twice', async()=>{
+  const {buildMovers}=await import('../src/lib/calc.ts');
+  const input=Array.from({length:12},(_,i)=>coin(i,i+1,i,0.9));
+  const m=buildMovers(input);
+  assert.equal(m.top.length,10);
+  assert.equal(m.top[0].supply,12);
+  assert.equal(m.other.count,2);
+  assert.equal(m.other.supply,3);
+  assert.equal(m.total.supply,78);
+  assert.equal(m.total.change,12);
+  assert.equal(m.total.changePct,12/66*100);
+  assert.equal(m.top.reduce((s,r)=>s+r.supply,0)+m.other.supply,m.total.supply);
+});
+
+test('missing baselines are partial, zero baselines retain dollar changes and missing current is excluded', async()=>{
+  const {buildMovers}=await import('../src/lib/calc.ts');
+  const m=buildMovers([coin(1,20,10),coin(2,10,null),coin(3,null,10),coin(4,5,0,null)]);
+  assert.equal(m.excluded,1);
+  assert.equal(m.total.supply,35);
+  assert.equal(m.total.change,15);
+  assert.equal(m.total.changePct,150);
+  assert.equal(m.total.missing,1);
+  assert.equal(m.rows.find(r=>r.coin.id==='4').changePct,null);
+  assert.equal(m.rows.find(r=>r.coin.id==='4').deviation,null);
+  assert.equal(m.missingPrices,1);
+  const noBaseline=buildMovers([coin(1,10,null)]);
+  assert.equal(noBaseline.total.change,null);
+  assert.equal(buildMovers([]).total.supply,null);
+});
+
+test('finite and nonnegative validation prevents fabricated zero amounts and prices', async()=>{
+  const {buildMovers}=await import('../src/lib/calc.ts');
+  const m=buildMovers([coin(1,NaN,1),coin(2,-1,1),coin(3,Infinity,1),coin(4,10,Infinity,NaN)]);
+  assert.equal(m.excluded,3);
+  assert.equal(m.total.change,null);
+  assert.equal(m.rows[0].price,null);
+  assert.equal(percent(1,0),'n/a');
+  assert.equal(percent(NaN,100),'n/a');
+});
+
+test('approved quote threshold is inclusive at 0.5% and does not label missing quotes', async()=>{
+  const {pegStatus,OFF_PEG_THRESHOLD_PCT}=await import('../src/lib/calc.ts');
+  assert.equal(OFF_PEG_THRESHOLD_PCT,0.5);
+  assert.equal(pegStatus((0.995-1)*100),'Near $1');
+  assert.equal(pegStatus((1.005-1)*100),'Near $1');
+  assert.equal(pegStatus(-0.51),'Off peg');
+  assert.equal(pegStatus(null),'No price');
+});
+
+test('snapshot HTTP date is preserved from the cached response, not invented at render time', async t=>{
+  const {getCoinSnapshot}=await import('../src/lib/stablecoins.ts');
+  t.mock.method(globalThis,'fetch',async()=>Response.json({peggedAssets:coins},{headers:{date:'Thu, 22 Oct 2026 00:00:00 GMT'}}));
+  assert.equal((await getCoinSnapshot()).responseDate,Date.UTC(2026,9,22));
+  globalThis.fetch=async()=>Response.json({peggedAssets:coins});
+  assert.equal((await getCoinSnapshot()).responseDate,null);
+});
+
+test('a failed coin request does not discard successful history (and vice versa)', async t=>{
+  const {getDashboardSnapshot}=await import('../src/lib/stablecoins.ts');
+  t.mock.method(globalThis,'fetch',async url=>url.includes('/stablecoins?')?new Response('failed',{status:503}):Response.json(rawHistory));
+  const historical=await getDashboardSnapshot();
+  assert.equal(historical.coins.status,'rejected');
+  assert.equal(historical.history.status,'fulfilled');
+  assert.deepEqual(historical.history.value,rawHistory);
+  globalThis.fetch=async url=>url.includes('/stablecoins?')?Response.json({peggedAssets:coins}):new Response('failed',{status:503});
+  const token=await getDashboardSnapshot();
+  assert.equal(token.coins.status,'fulfilled');
+  assert.equal(token.history.status,'rejected');
+});
+
+
+test('identity is keyed by id: duplicate symbols remain distinct while conflicting duplicate ids are excluded', async()=>{
+  const {buildMovers}=await import('../src/lib/calc.ts');
+  const a=coin(1,10,5), b={...coin(2,20,10),symbol:a.symbol};
+  const duplicate=buildMovers([a,{...a},b]);
+  assert.equal(duplicate.rows.length,2);
+  assert.equal(duplicate.total.supply,30);
+  assert.equal(duplicate.duplicateRecords,1);
+  const conflict=buildMovers([a,{...a,circulating:{peggedUSD:999}},b]);
+  assert.equal(conflict.excluded,1);
+  assert.equal(conflict.total.supply,20);
 });

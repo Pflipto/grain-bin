@@ -93,6 +93,14 @@ GitHub branch protection if merges should be blocked on failures.
 
 The dashboard requests public DefiLlama endpoints at runtime, so an internet connection is needed for live data. No API key is currently required.
 
+## Reading the new market views
+
+The momentum view compares historical USD-valued snapshots over 7, 30, and 90 days, year to date, and one year. It labels stale snapshots and unavailable baselines, and leaves historical chart gaps unconnected. Expand “View the data” for the chart’s dated values.
+
+The largest-coins table ranks by reported circulating value, not by biggest change. Its provider-month comparisons and the historical headline use different valuation methods, so their difference is shown rather than forced to match. Partial change totals and unavailable values are labelled explicitly.
+
+Price labels describe available quotes of unknown source freshness. The owner-approved off-peg threshold is more than 0.5% from $1; it does not establish a live incident or its duration. API response dates describe the response, not the underlying observations. Both source requests are checked hourly, and a failure in one does not hide the independent view.
+
 ## The next questions
 
 Grain Bin is intentionally small. Future investigations might explore how supply shifts between issuers, how stablecoins spread across blockchains, and what concentration looks like over time.

@@ -63,7 +63,7 @@ PR 0 discovery completed Oct 22, 2026. Read [the discovery report](../discovery/
 **Data integrity** (from `AGENTS.md`):
 
 - Never silently substitute zero for missing data. Missing means "not available", shown as such.
-- Every view shows its source and UTC time semantics: historical snapshot date for charts; retrieval time for token data. Token/price source timestamps are unavailable; say so. Retrieval time is not evidence of fresh source observations. Historical snapshots older than 48 hours are labelled stale; keep their last-known values and dates visible. Invalid/partial data is unavailable or explicitly partial, never silently complete.
+- Every view shows its source and UTC time semantics: historical snapshot date for charts; the cached API response’s HTTP date for token data when available, otherwise an explicit unknown date. HTTP response dates are labelled as such, never presented as source observation timestamps. Token/price source timestamps are unavailable; say so. Retrieval time is not evidence of fresh source observations. Historical snapshots older than 48 hours are labelled stale; keep their last-known values and dates visible. Invalid/partial data is unavailable or explicitly partial, never silently complete.
 - Estimates are labelled as estimates; derived numbers are labelled as derived.
 - Every view has an empty or error state. One failing optional fetch must not blank the page.
 
@@ -199,7 +199,7 @@ Placement top to bottom: header and intro (keep), A, B, C, D, E, then field note
 | Price | `price` as reported; missing shows "No price", never assumed $1 |
 | vs $1 | `(price − 1) × 100` as a signed percent; see threshold below |
 
-**Off-peg label:** a named constant `OFF_PEG_THRESHOLD_PCT = 0.5`. Within it, show "Near $1"; beyond it, show "Off peg" with the signed deviation. This is a snapshot only: say so ("current price only; past depegs are not shown"). **OWNER DECISION:** threshold value.
+**Off-peg label:** a named constant `OFF_PEG_THRESHOLD_PCT = 0.5`. Within it, show "Near $1"; beyond it, show "Off peg" with the signed deviation. This is a snapshot only: say so ("current price only; past depegs are not shown"). **OWNER APPROVED:** 0.5% (Oct 23, 2026).
 
 **Reconciliation line under the table (required):**
 *"Available token-level provider-month changes sum to {x}. The historical 30-day USD-valued series changed {y}. These measures differ by {z}; valuation, timing, and coverage may differ (see Data notes)."*
@@ -317,7 +317,7 @@ Each PR waits for the owner's review of the preview before the next begins.
 | Decision | Default |
 |----------|---------|
 | Share-over-time window | 24 months (12 if history is short) |
-| Off-peg threshold | 0.5% |
+| Off-peg threshold | 0.5%, owner approved Oct 23, 2026 |
 | Movers table size | Top 10 plus "All other" |
 | Chain view size | Top 8 plus "Other chains" |
 | Event list | Seeds in view F, each source-verified first |
