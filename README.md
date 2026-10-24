@@ -76,12 +76,15 @@ Use Node.js 24 and run these commands from `grain-bin-app/`:
 npm ci
 npm run lint
 npm run typecheck
+npm test
 npm run build
 ```
 
 GitHub Actions runs these checks on pull requests and changes to `main`.
 Lint warnings fail the check. Type checking generates Next.js route types first,
-so it also works in a fresh checkout. There is currently no automated test suite.
+so it also works in a fresh checkout. Node’s built-in test runner covers the extracted
+data access, calculations, and formatters without additional dependencies. Tests use
+dated fixtures and synthetic edge cases; they do not call live APIs.
 The build needs access to Google Fonts (`fonts.googleapis.com` and
 `fonts.gstatic.com`); live dashboard validation also needs `stablecoins.llama.fi`.
 A passing build does not replace checking the dashboard with live data in a
