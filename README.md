@@ -97,9 +97,9 @@ The dashboard requests public DefiLlama endpoints at runtime, so an internet con
 
 The momentum view compares historical USD-valued snapshots over 7, 30, and 90 days, year to date, and one year. It labels stale snapshots and unavailable baselines, and leaves historical chart gaps unconnected. The MIT-licensed Recharts graph supports hover, touch, and arrow-key exploration of exact dated values; dates are UTC. Missing daily observations break the line.
 
-The MIT-licensed TanStack table shows the ten largest coins by reported circulating value, not by biggest change. Column headers sort those selected coins; the aggregate rows stay fixed below. Signed changes use green/red styling, and each price has its signed deviation from $1 beneath it. Its provider-month comparisons and the historical headline use different valuation methods, so their difference is shown rather than forced to match. Partial change totals and unavailable values are labelled explicitly.
+The MIT-licensed TanStack table shows the ten largest coins by reported circulating value, not by biggest change. Column headers sort those selected coins; the aggregate rows stay fixed below. Signed changes use green/red styling, and each price has its signed deviation from $1 beneath it. Its provider-month comparisons and the historical headline use different valuation methods and are not assumed equivalent. Partial change totals and unavailable values are labelled explicitly.
 
-Price labels describe available quotes of unknown source freshness. The owner-approved off-peg threshold is more than 0.5% from $1; it does not establish a live incident or its duration. API response dates describe the response, not the underlying observations. Both source requests are checked hourly, and a failure in one does not hide the independent view.
+Prices and signed deviations describe available quotes of unknown source freshness, not verified live peg incidents. Both source requests are checked hourly, and a failure in one does not hide the independent view.
 
 ## The next questions
 
