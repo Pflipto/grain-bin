@@ -1,0 +1,9 @@
+.timeline-range { display: flex; gap: 6px; margin-bottom: 16px; }
+.timeline-range button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--sb-line); border-radius: 6px; background: var(--sb-paper); color: var(--sb-muted); font: 500 12px var(--font-inter), sans-serif; cursor: pointer; }
+.timeline-range button[aria-pressed="true"] { background: var(--sb-silo); color: var(--sb-paper); border-color: var(--sb-silo); }
+.timeline-range button:focus-visible,.timeline-events a:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
+.timeline-events { list-style: none; margin: 20px 0 0; padding: 0; counter-reset: timeline-event; }
+.timeline-events li { display: flex; align-items: baseline; gap: 10px; border-top: 1px solid var(--sb-line); padding: 12px 0; font-size: 13px; line-height: 1.7; counter-increment: timeline-event; }
+.timeline-events li::before { content: counter(timeline-event); color: var(--sb-muted); font-variant-numeric: tabular-nums; }
+.timeline-events time { color: var(--sb-muted); margin-right: 10px; }
+.timeline-events a { text-decoration: underline; text-underline-offset: 3px; }
