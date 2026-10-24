@@ -93,6 +93,14 @@ GitHub branch protection if merges should be blocked on failures.
 
 The dashboard requests public DefiLlama endpoints at runtime, so an internet connection is needed for live data. No API key is currently required.
 
+## Reading the new market views
+
+The momentum view compares historical USD-valued snapshots over 7, 30, and 90 days, year to date, and one year. It labels stale snapshots and unavailable baselines, and leaves historical chart gaps unconnected. The MIT-licensed Recharts graph supports hover, touch, and arrow-key exploration of exact dated values; dates are UTC. Missing daily observations break the line.
+
+The MIT-licensed TanStack table shows the ten largest coins by reported circulating value, not by biggest change. Column headers sort those selected coins; the aggregate rows stay fixed below. Signed changes use green/red styling, and each price has its signed deviation from $1 beneath it. Its provider-month comparisons and the historical headline use different valuation methods and are not assumed equivalent. Partial change totals and unavailable values are labelled explicitly.
+
+Prices and signed deviations describe available quotes of unknown source freshness, not verified live peg incidents. Both source requests are checked hourly, and a failure in one does not hide the independent view.
+
 ## The next questions
 
 Grain Bin is intentionally small. Future investigations might explore how supply shifts between issuers, how stablecoins spread across blockchains, and what concentration looks like over time.

@@ -63,7 +63,7 @@ PR 0 discovery completed Oct 22, 2026. Read [the discovery report](../discovery/
 **Data integrity** (from `AGENTS.md`):
 
 - Never silently substitute zero for missing data. Missing means "not available", shown as such.
-- Every view shows its source and UTC time semantics: historical snapshot date for charts; retrieval time for token data. Token/price source timestamps are unavailable; say so. Retrieval time is not evidence of fresh source observations. Historical snapshots older than 48 hours are labelled stale; keep their last-known values and dates visible. Invalid/partial data is unavailable or explicitly partial, never silently complete.
+- Every view shows its source and UTC time semantics: historical snapshot date for charts; the cached API response’s HTTP date for token data when available, otherwise an explicit unknown date. HTTP response dates are labelled as such, never presented as source observation timestamps. Token/price source timestamps are unavailable; say so. Retrieval time is not evidence of fresh source observations. Historical snapshots older than 48 hours are labelled stale; keep their last-known values and dates visible. Invalid/partial data is unavailable or explicitly partial, never silently complete.
 - Estimates are labelled as estimates; derived numbers are labelled as derived.
 - Every view has an empty or error state. One failing optional fetch must not blank the page.
 
@@ -84,7 +84,7 @@ PR 0 discovery completed Oct 22, 2026. Read [the discovery report](../discovery/
 
 The existing "Where the Dollars Gather" bar uses Silo for USDT and Harvest for USDC. Update it to this mapping in PR 2 so colours mean one thing everywhere. Colours that must be told apart also differ in lightness.
 
-**Layout:** server-rendered by default. No client JavaScript unless a view truly needs it. Real `<table>` elements for tables. SVG charts carry `role="img"` with an `aria-label` summarising the finding, plus a collapsed `<details>` "View the data" table. Must work at 390px width. Card radius 12px max. Charts are hand-rolled SVG like the existing one; share small helpers rather than adding a chart library.
+**Layout:** server-rendered by default. No client JavaScript unless a view truly needs it. Real `<table>` elements for tables. Static charts carry descriptive accessible labels. Owner-approved exception for the historical chart: use MIT-licensed Recharts with hover/touch tooltips and keyboard navigation; remove its "View the data" disclosure. Must work at 390px width. Card radius 12px max. Share small helpers; the historical chart uses the owner-requested Recharts client component, with data access and calculations kept server-side.
 
 ---
 
@@ -199,13 +199,13 @@ Placement top to bottom: header and intro (keep), A, B, C, D, E, then field note
 | Price | `price` as reported; missing shows "No price", never assumed $1 |
 | vs $1 | `(price − 1) × 100` as a signed percent; see threshold below |
 
-**Off-peg label:** a named constant `OFF_PEG_THRESHOLD_PCT = 0.5`. Within it, show "Near $1"; beyond it, show "Off peg" with the signed deviation. This is a snapshot only: say so ("current price only; past depegs are not shown"). **OWNER DECISION:** threshold value.
+**Owner presentation update:** remove repeated Near $1/Off peg labels and the separate vs-$1 column. Show the signed deviation beneath the price using the same green/red approach as momentum. The previously approved 0.5% threshold no longer drives a visible label. Quote freshness remains unknown; this does not show historical depegs.
 
-**Reconciliation line under the table (required):**
-*"Available token-level provider-month changes sum to {x}. The historical 30-day USD-valued series changed {y}. These measures differ by {z}; valuation, timing, and coverage may differ (see Data notes)."*
-Compute both numbers and show both. Never force them to match. Coins with missing/non-finite current or previous values are excluded from change sums and counted. Valid zero previous values contribute dollar change but have unavailable percentage change. All-other and total rows label partial sums explicitly, include counts, and never sum percentage changes. All-missing aggregates are unavailable, not zero. Price/peg cells on aggregate rows are not applicable. Missing current values are excluded from ranking/share denominators and their count is disclosed.
+**Owner presentation update:** omit the derived reconciliation paragraph below the table. Preserve the distinction between provider-month and historical measures in Data notes; never force them to match.
 
-**Notes:** server-rendered `<table>`, default sort by supply descending, no client interactivity in v1. State that DefiLlama defines the previous-month baseline relative to each coin’s latest observation: inspected source selects on/before 30 days earlier within a 36-hour search window. Actual source observation times are not exposed. “Off peg” describes the available quote only, not a verified live incident; price-source freshness is unknown.
+Coins with missing/non-finite current or previous values are excluded from change sums and counted. Valid zero previous values contribute dollar change but have unavailable percentage change. All-other and total rows label partial sums explicitly, include counts, and never sum percentage changes. All-missing aggregates are unavailable, not zero. Price/peg cells on aggregate rows are not applicable. Missing current values are excluded from ranking/share denominators and their count is disclosed.
+
+**Notes:** semantic table rendered by the owner-requested MIT TanStack React Table client component. Default sort is circulating value descending. Sort only the selected top ten; keep all-other and total rows fixed in the footer. Stack dollar and percentage changes in one cell, without Up/Down words; use signed green/red values like momentum. State that DefiLlama defines the previous-month baseline relative to each coin’s latest observation: inspected source selects on/before 30 days earlier within a 36-hour search window. Actual source observation times are not exposed. “Off peg” describes the available quote only, not a verified live incident; price-source freshness is unknown.
 
 ### C. Where it lives (chains)
 
@@ -288,7 +288,7 @@ Compute both numbers and show both. Never force them to match. Coins with missin
 - No new dependency without prior approval.
 - No hardcoded market values in runtime code. Captured test fixtures are explicitly dated, isolated samples, never runtime fallbacks.
 - Each new view has loading-safe, empty, and error states.
-- Accessible: real tables, labelled SVGs, "View the data" fallback, text contrast per BRAND.md, usable at 390px.
+- Accessible: real tables, labelled charts, keyboard-accessible historical tooltips (owner-approved replacement for "View the data"), text contrast per BRAND.md, usable at 390px.
 - Checked against live data in a **Vercel preview**, as the README requires (a passing build does not replace this).
 - PR description follows the `AGENTS.md` report format.
 
@@ -317,7 +317,7 @@ Each PR waits for the owner's review of the preview before the next begins.
 | Decision | Default |
 |----------|---------|
 | Share-over-time window | 24 months (12 if history is short) |
-| Off-peg threshold | 0.5% |
+| Off-peg threshold | 0.5%, owner approved Oct 23, 2026 |
 | Movers table size | Top 10 plus "All other" |
 | Chain view size | Top 8 plus "Other chains" |
 | Event list | Seeds in view F, each source-verified first |

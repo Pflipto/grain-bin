@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { cacheLife } from "next/cache";
 import FieldGuide from "./FieldGuide";
-import { getCoinList, getTotalHistory } from "../lib/stablecoins";
-import { calculateDashboard } from "../lib/calc";
-import { money, percent, shortDate } from "../lib/format";
+import Momentum from "./Momentum";
+import Movers from "./Movers";
+import { getDashboardSnapshot } from "../lib/stablecoins";
+import { calculateDashboard, buildMovers } from "../lib/calc";
+import { money, percent, fullDate } from "../lib/format";
 
 function WheatMark({ size = 28 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" fill="currentColor">
@@ -16,12 +19,18 @@ function WheatMark({ size = 28 }: { size?: number }) {
 }
 
 export default async function Home() {
-  const [assets, rawHistory] = await Promise.all([getCoinList(), getTotalHistory()]);
-  const usdAssets = assets.filter((coin) => coin.pegType === "peggedUSD");
+  "use cache";
+  // Evaluate snapshot freshness when this hourly server view is regenerated.
+  // Explicit caching also permits the clock read during Next.js prerendering.
+  cacheLife({stale:300,revalidate:3600,expire:7200});
+  const {coins:coinsResult, history:historyResult, generatedAt:now} = await getDashboardSnapshot();
+  const assets = coinsResult.status === "fulfilled" ? coinsResult.value.coins : [];
+  const rawHistory = historyResult.status === "fulfilled" ? historyResult.value : [];
+  const usdAssets = assets.filter(coin => coin && coin.pegType === "peggedUSD");
+  const movers = buildMovers(assets);
   const {
-    assetTotal, usdt, usdc, total, snapshotDate, hasAssetBreakdown, others,
-    sourceDifferencePct, pegGroups, allPegTotal, latest, growth, growthPct,
-    chartPoints, min, max, firstDate, coordinates,
+    assetTotal, usdt, usdc, others, hasAssetBreakdown,
+    sourceDifferencePct, pegGroups, allPegTotal, snapshotDate,
   } = calculateDashboard(usdAssets, rawHistory);
 
   return (
@@ -47,88 +56,28 @@ export default async function Home() {
           <div className="intro-stamp"><WheatMark size={38}/><span>AN ONGOING<br/>FIELD STUDY</span></div>
         </div>
 
-        <section className="overview-grid" aria-label="Market overview">
-          <div className="hero-stat">
-            <div className="section-kicker">01 <span/> USD-PEGGED CIRCULATING VALUE</div>
-            <p className="hero-value tabular">{total !== null ? money(total) : 'Unavailable'}</p>
-            <p className="stat-caption">USD-equivalent circulating value of USD-pegged stablecoins</p>
-            <div className="hero-footer"><span className="source-dot"/> Source: DefiLlama <span className="footer-spacer"/> {snapshotDate !== null ? `As of ${new Date(snapshotDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })} UTC · Checked hourly` : 'Snapshot unavailable · Checked hourly'}</div>
-          </div>
-          <div className="growth-stat">
-            <div className="section-kicker">02 <span/> SINCE LAST MONTH</div>
-            {growth !== null && growthPct !== null ? <>
-              <p className="growth-value tabular">{growth >= 0 ? "+" : "−"}{money(Math.abs(growth))}</p>
-              <p className="growth-percent tabular">{growthPct >= 0 ? "+" : ""}{growthPct.toFixed(2)}% <span>over 30 days</span></p>
-            </> : <p className="empty-data">Historical data unavailable</p>}
-            <p className="growth-note">Same dated USD supply series, compared with 30 days earlier.</p>
-          </div>
-        </section>
-
-        <section className="peg-overview" aria-labelledby="peg-overview-heading">
-          <div className="peg-overview-heading">
-            <div><p className="card-overline">THE WIDER LANDSCAPE</p><h2 id="peg-overview-heading">What are stablecoins pegged to?</h2></div>
-            <span>SHARE OF CIRCULATING SUPPLY · USD EQUIVALENT</span>
-          </div>
-          {allPegTotal > 0 ? <>
-            <div className="peg-overview-bar" role="img" aria-label={pegGroups.map((group) => `${group.name}: ${group.present ? percent(group.value, allPegTotal) + " percent" : "not reported"}`).join(", ")}>
-              {pegGroups.filter((group) => group.present && group.value > 0).map((group) => <div key={group.name} title={`${group.name}: ${percent(group.value, allPegTotal)}% · ${money(group.value)}`} style={{ flexGrow: group.value, flexBasis: 0, background: group.color }} />)}
-            </div>
-            <div className="peg-overview-legend" aria-label="Explore circulating supply by peg">
-              {pegGroups.map((group) => <div className="peg-overview-item" key={group.name}>
-                <button type="button" className="peg-overview-label" aria-label={group.present ? `${group.name}: ${percent(group.value, allPegTotal)} percent, ${money(group.value)} circulating` : `${group.name}: not reported by source`}>
-                  <i style={{background:group.color}}/>{group.name}
-                  <span className="peg-overview-tooltip" role="tooltip"><strong>{group.present ? `${percent(group.value, allPegTotal)}%` : "Not reported"}</strong><span>{group.present ? `${money(group.value)} circulating` : "Not included in this dataset"}</span></span>
-                </button>
-              </div>)}
-            </div>
-          </> : <p className="empty-data">Peg composition data unavailable.</p>}
-          <p className="peg-overview-note">Includes USD, EUR and other non-commodity, non-crypto peg types tracked by DefiLlama. Values use DefiLlama’s latest USD-equivalent historical snapshot; absent peg types are marked not reported. This is not a breakdown of reserve assets.</p>
-        </section>
-
-        <section className="market-section" aria-label="Data methodology">
-          <div className="section-kicker">DATA NOTES <span/> HOW WE COUNT</div>
-          <p className="stat-caption">The headline, monthly change, and historical chart use DefiLlama&apos;s public historical USD-valued circulating supply for USD-pegged stablecoins. This is not necessarily the same measure as DefiLlama&apos;s website market cap, which may use different coverage, methodology, or reporting times.</p>
-          <p className="stat-caption">Market-share figures below use the current individual-asset supply dataset and its own total as the denominator, rather than mixing current token data with a dated historical aggregate. {sourceDifferencePct !== null ? `The current token sum differs from the historical aggregate by ${sourceDifferencePct.toFixed(2)}%.` : "Comparison with the historical aggregate is unavailable."}</p>
-        </section>
-
-        <section className="market-section" aria-labelledby="history-heading">
-          <div className="section-heading">
-            <div><div className="section-kicker">03 <span/> THE LONG VIEW</div><h2 id="history-heading">The Shape of Things</h2></div>
-            <span className="section-meta">USD-PEGGED / 1 YEAR</span>
-          </div>
-          <div className="chart-card">
-            {chartPoints.length > 1 ? <>
-              <div className="chart-topline"><span>Historical circulating supply</span><span className="chart-current tabular">{money(latest!.supply)} <small>latest snapshot</small></span></div>
-              <svg viewBox="0 0 800 245" role="img" aria-label="Line chart showing the last year of USD-pegged stablecoin supply" className="supply-chart">
-                {[45,100,155,210].map((y) => <line key={y} x1="48" x2="752" y1={y} y2={y} stroke="#E4DCCC" strokeWidth="1"/>)}
-                <polygon points={`48,210 ${coordinates} 752,210`} fill="#C58A42" opacity="0.10"/>
-                <polyline points={coordinates} fill="none" stroke="#A36B2C" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round"/>
-                <text x="48" y="29" fill="#60685D" fontSize="15">{money(max)}</text>
-                <text x="48" y="234" fill="#60685D" fontSize="15">{money(min)}</text>
-              </svg>
-              <div className="chart-dates"><span>{shortDate(firstDate)}</span><span>{shortDate(latest!.date)}</span></div>
-            </> : <p className="empty-data">Not enough historical data to chart.</p>}
-          </div>
-        </section>
+        <Momentum records={rawHistory} failed={historyResult.status === "rejected"} now={now}/>
+        <Movers assets={assets} failed={coinsResult.status === "rejected"}/>
 
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
-            <div><div className="section-kicker">04 <span/> WHO&apos;S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
+            <div><div className="section-kicker">03 <span/> WHO&apos;S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
             <span className="section-meta">SHARE OF CURRENT USD-PEGGED TOKEN SUPPLY</span>
           </div>
+          {movers.excluded > 0 && <p className="data-note">{movers.excluded} coins are excluded; shares describe available values only.</p>}
           {hasAssetBreakdown ? <div className="composition-grid">
             <div className="composition-card">
               <p className="card-overline">SHARE BY STABLECOIN</p>
-              <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt,assetTotal)} percent, USDC ${percent(usdc,assetTotal)} percent, others ${percent(others,assetTotal)} percent`}>
-                <div style={{width: `${percent(usdt,assetTotal)}%`,background:"var(--sb-silo)"}}/>
-                <div style={{width: `${percent(usdc,assetTotal)}%`,background:"var(--sb-harvest)"}}/>
-                <div style={{width: `${percent(others,assetTotal)}%`,background:"var(--sb-sage)"}}/>
+              <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt!,assetTotal)} percent, USDC ${percent(usdc!,assetTotal)} percent, others ${percent(others!,assetTotal)} percent`}>
+                <div style={{width: `${percent(usdt!,assetTotal)}%`,background:"var(--sb-harvest)"}}/>
+                <div style={{width: `${percent(usdc!,assetTotal)}%`,background:"var(--sb-sage)"}}/>
+                <div style={{width: `${percent(others!,assetTotal)}%`,background:"var(--sb-oxblood)"}}/>
               </div>
               <div className="share-list">
                 {[
-                  {name:"USDT",value:usdt,color:"var(--sb-silo)"},
-                  {name:"USDC",value:usdc,color:"var(--sb-harvest)"},
-                  {name:"Other USD pegs",value:others,color:"var(--sb-sage)"},
+                  {name:"USDT",value:usdt!,color:"var(--sb-harvest)"},
+                  {name:"USDC",value:usdc!,color:"var(--sb-sage)"},
+                  {name:"Other USD pegs",value:others!,color:"var(--sb-oxblood)"},
                 ].map((coin) => <div className="share-row" key={coin.name}>
                   <span className="share-label"><i style={{background:coin.color}}/>{coin.name}</span>
                   <span className="share-amount tabular">{money(coin.value)}</span>
@@ -138,7 +87,7 @@ export default async function Home() {
             </div>
             <div className="concentration-card">
               <p className="card-overline">THE BIG TWO</p>
-              <p className="concentration-value tabular">{percent(usdt + usdc,assetTotal)}<span>%</span></p>
+              <p className="concentration-value tabular">{percent(usdt! + usdc!,assetTotal)}<span>%</span></p>
               <p className="concentration-description">Combined market share of USDT and USDC.</p>
               <div className="concentration-rule"/>
               <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
@@ -147,11 +96,18 @@ export default async function Home() {
         </section>
 
         <section className="market-section field-note" aria-labelledby="field-note-heading">
-          <div className="section-kicker">05 <span/> NOTES FROM THE FIELD</div>
+          <div className="section-kicker">04 <span/> NOTES FROM THE FIELD</div>
           <h2 id="field-note-heading">A question worth keeping.</h2>
-          <p>{hasAssetBreakdown ? <>USDT and USDC make up <strong className="tabular">{percent(usdt + usdc, assetTotal)}%</strong> of the USD-pegged individual-asset supply counted here. That&apos;s an observation, not a prediction.</> : "Individual-asset supply data is currently unavailable."}</p>
+          <p>{hasAssetBreakdown ? <>USDT and USDC make up <strong className="tabular">{percent(usdt! + usdc!, assetTotal)}%</strong> of the USD-pegged individual-asset supply counted here. That&apos;s an observation, not a prediction.</> : "Individual-asset supply data is currently unavailable."}</p>
           <p className="field-note-question">If the market keeps growing, will the smaller stablecoins gain ground, or will the big two grow with it?</p>
           <p className="field-note-aside">For further study: follow changes in market share over time.</p>
+        </section>
+
+        <section className="market-section data-methodology" aria-label="Data methodology">
+          <div className="section-kicker">DATA NOTES <span/> HOW WE COUNT</div>
+          <p className="data-note">The headline, changes, and chart use DefiLlama’s historical USD-valued series. The coin table and shares use the available token-level dataset and its own denominator. These are different measures. {sourceDifferencePct !== null ? `The available token sum differs from the historical aggregate by ${sourceDifferencePct.toFixed(2)}%.` : "A comparison with the historical aggregate is unavailable."}</p>
+          <p className="data-note">In the inspected provider implementation, token-month changes value current and previous balances at the current conversion price; historical USD totals use historical prices. The provider-month baseline is on or before each coin’s latest observation minus 30 days, within a further 36-hour search window. Actual observation times and the deployed provider revision are not exposed. We do not assign the reconciliation gap a verified cause.</p>
+          <p className="data-note">{allPegTotal > 0 ? <>Among reported non-commodity, non-crypto peg types, {pegGroups.map(group => `${group.name}: ${group.present ? `${percent(group.value, allPegTotal)}%` : "not reported"}`).join("; ")} of USD-equivalent circulating value{snapshotDate !== null ? ` (${fullDate(snapshotDate)} UTC)` : ""}.</> : "Peg composition is unavailable."} Source: DefiLlama. Peg types do not describe reserve assets.</p>
         </section>
 
         <footer className="site-footer shelterbelt-footer">

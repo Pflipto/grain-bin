@@ -29,24 +29,28 @@ export type HistoricalRecord = {
 
 const BASE_URL = "https://stablecoins.llama.fi";
 
-async function getJson(path: string): Promise<unknown> {
+async function getResponse(path: string) {
   const response = await fetch(`${BASE_URL}${path}`, { next: { revalidate: 3600 } });
   if (!response.ok) throw new Error("Could not retrieve stablecoin market data");
-  return response.json();
+  const date = response.headers.get("date");
+  const parsedDate = date ? Date.parse(date) : NaN;
+  return {data: await response.json() as unknown, responseDate: Number.isFinite(parsedDate) ? parsedDate : null};
 }
 
-export async function getCoinList(): Promise<Stablecoin[]> {
-  const data = await getJson("/stablecoins?includePrices=true");
+export async function getCoinSnapshot(): Promise<{coins:Stablecoin[]; responseDate:number|null}> {
+  const {data,responseDate} = await getResponse("/stablecoins?includePrices=true");
   if (!data || typeof data !== "object" || !("peggedAssets" in data) || !Array.isArray(data.peggedAssets)) {
     throw new Error("Invalid stablecoin list response");
   }
-  // Container validation only in this extraction. Fields stay unmodified;
-  // view-specific validation belongs with the new calculations in PR 2.
-  return data.peggedAssets;
+  return {coins:data.peggedAssets,responseDate};
+}
+
+export async function getCoinList(): Promise<Stablecoin[]> {
+  return (await getCoinSnapshot()).coins;
 }
 
 async function getHistory(path: string): Promise<HistoricalRecord[]> {
-  const data = await getJson(path);
+  const {data} = await getResponse(path);
   if (!Array.isArray(data)) throw new Error("Invalid stablecoin history response");
   return data;
 }
@@ -59,4 +63,10 @@ export function getTotalHistory(): Promise<HistoricalRecord[]> {
 export function getCoinHistory(id: string): Promise<HistoricalRecord[]> {
   if (!id.trim()) return Promise.reject(new Error("Stablecoin id is required"));
   return getHistory(`/stablecoincharts/all?stablecoin=${encodeURIComponent(id)}`);
+}
+
+/** One shared load; an unavailable source must not blank independent views. */
+export async function getDashboardSnapshot() {
+  const [coins,history] = await Promise.allSettled([getCoinSnapshot(),getTotalHistory()]);
+  return {coins,history,generatedAt:Date.now()};
 }

@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 type Entry = { term: string; subtitle: string; category: "Projects" | "Concepts"; description: string; link?: string };
 const entries: Entry[] = [
+  { term: "Provider-month change", subtitle: "A separate comparison", category: "Concepts", description: "The difference between DefiLlama’s current and previous-month reported coin values. The inspected provider implementation values both balances at the current conversion price; it is not the same measure as the change between historical USD-valued snapshots." },
+  { term: "Price quote", subtitle: "An available observation", category: "Concepts", description: "A price reported by the data provider. Its observation time is not supplied here. A deviation from $1 describes that quote, not proof of a live depeg or its duration." },
   { term: "USDT", subtitle: "Tether", category: "Projects", description: "A US dollar-pegged stablecoin issued by Tether. Its circulating supply makes it a major part of the market tracked in Grain Bin.", link: "https://tether.to/" },
   { term: "USDC", subtitle: "USD Coin", category: "Projects", description: "A US dollar-pegged stablecoin issued by Circle. Like USDT, it is designed to maintain a value close to one US dollar.", link: "https://www.circle.com/usdc" },
   { term: "DAI", subtitle: "Sky ecosystem", category: "Projects", description: "A dollar-pegged crypto-backed stablecoin associated with the MakerDAO system, now part of the Sky ecosystem. Its mechanisms differ from those of USDT and USDC.", link: "https://sky.money/" },
