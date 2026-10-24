@@ -5,7 +5,8 @@ import Momentum from "./Momentum";
 import Movers from "./Movers";
 import { getDashboardSnapshot } from "../lib/stablecoins";
 import { calculateDashboard, buildMovers } from "../lib/calc";
-import { money, percent, fullDate } from "../lib/format";
+import { percent, fullDate } from "../lib/format";
+import ShareHistory from "./ShareHistory";
 
 function WheatMark({ size = 28 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" fill="currentColor">
@@ -29,7 +30,7 @@ export default async function Home() {
   const usdAssets = assets.filter(coin => coin && coin.pegType === "peggedUSD");
   const movers = buildMovers(assets);
   const {
-    assetTotal, usdt, usdc, others, hasAssetBreakdown,
+    assetTotal, usdt, usdc, hasAssetBreakdown,
     sourceDifferencePct, pegGroups, allPegTotal, snapshotDate,
   } = calculateDashboard(usdAssets, rawHistory);
 
@@ -61,37 +62,21 @@ export default async function Home() {
         <section className="market-section" aria-labelledby="composition-heading">
           <div className="section-heading">
             <div><div className="section-kicker">03 <span/> WHO&apos;S WHERE</div><h2 id="composition-heading">Where the Dollars Gather</h2></div>
-            <span className="section-meta">SHARE OF CURRENT USD-PEGGED TOKEN SUPPLY</span>
+            <span className="section-meta">HISTORICAL SHARES / CURRENT SNAPSHOT</span>
           </div>
           {movers.excluded > 0 && <p className="data-note">{movers.excluded} coins are excluded; shares describe available values only.</p>}
-          {hasAssetBreakdown ? <div className="composition-grid">
+          <div className="composition-grid share-history-layout">
             <div className="composition-card">
-              <p className="card-overline">SHARE BY STABLECOIN</p>
-              <div className="share-bar" role="img" aria-label={`USDT ${percent(usdt!,assetTotal)} percent, USDC ${percent(usdc!,assetTotal)} percent, others ${percent(others!,assetTotal)} percent`}>
-                <div style={{width: `${percent(usdt!,assetTotal)}%`,background:"var(--sb-harvest)"}}/>
-                <div style={{width: `${percent(usdc!,assetTotal)}%`,background:"var(--sb-sage)"}}/>
-                <div style={{width: `${percent(others!,assetTotal)}%`,background:"var(--sb-oxblood)"}}/>
-              </div>
-              <div className="share-list">
-                {[
-                  {name:"USDT",value:usdt!,color:"var(--sb-harvest)"},
-                  {name:"USDC",value:usdc!,color:"var(--sb-sage)"},
-                  {name:"Other USD pegs",value:others!,color:"var(--sb-oxblood)"},
-                ].map((coin) => <div className="share-row" key={coin.name}>
-                  <span className="share-label"><i style={{background:coin.color}}/>{coin.name}</span>
-                  <span className="share-amount tabular">{money(coin.value)}</span>
-                  <strong className="tabular">{percent(coin.value,assetTotal)}%</strong>
-                </div>)}
-              </div>
+              <ShareHistory assets={assets} totalHistory={rawHistory} now={now}/>
             </div>
-            <div className="concentration-card">
+            {hasAssetBreakdown ? <div className="concentration-card">
               <p className="card-overline">THE BIG TWO</p>
               <p className="concentration-value tabular">{percent(usdt! + usdc!,assetTotal)}<span>%</span></p>
               <p className="concentration-description">Combined market share of USDT and USDC.</p>
               <div className="concentration-rule"/>
               <p className="concentration-footnote">Together, these two tokens account for this share of the USD-pegged supply tracked here.</p>
-            </div>
-          </div> : <div className="composition-card"><p className="card-overline">RECONCILIATION PENDING</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">Individual asset supply data is unavailable.</p></div>}
+            </div> : <div className="composition-card"><p className="card-overline">CURRENT SHARES</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">Individual asset supply data is unavailable.</p></div>}
+          </div>
         </section>
 
         <section className="market-section data-methodology" aria-label="Data methodology">
