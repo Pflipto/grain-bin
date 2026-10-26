@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cacheLife } from "next/cache";
 import FieldGuide from "./FieldGuide";
+import Classifications from "./Classifications";
 import Momentum from "./Momentum";
 import Movers from "./Movers";
 import { getDashboardSnapshot } from "../lib/stablecoins";
@@ -78,6 +79,8 @@ export default async function Home() {
             </div> : <div className="composition-card"><p className="card-overline">CURRENT SHARES</p><p className="empty-data">Token-level concentration temporarily unavailable.</p><p className="stat-caption">Individual asset supply data is unavailable.</p></div>}
           </div>
         </section>
+
+        <Classifications assets={assets}/>
 
         <section className="market-section data-methodology" aria-label="Data methodology">
           <div className="section-kicker">DATA NOTES <span/> HOW WE COUNT</div>

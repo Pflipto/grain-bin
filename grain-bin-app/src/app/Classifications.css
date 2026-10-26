@@ -1,0 +1,6 @@
+.classification-disclosure { border: 1px solid var(--sb-line); border-radius: var(--sb-radius-card); background: var(--sb-paper); }
+.classification-disclosure summary { padding: 16px 20px; cursor: pointer; color: var(--sb-silo); font-size: 14px; min-height: 52px; }
+.classification-disclosure summary:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; border-radius: 8px; }
+.classification-table { min-width: 660px; }
+.classification-coins { list-style: none; margin: 0; padding: 0; font-size: 12px; line-height: 1.8; }
+.classification-notes { padding: 0 20px 8px; }
