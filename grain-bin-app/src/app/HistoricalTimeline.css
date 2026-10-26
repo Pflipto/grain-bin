@@ -7,3 +7,8 @@
 .timeline-events li::before { content: counter(timeline-event); color: var(--sb-muted); font-variant-numeric: tabular-nums; }
 .timeline-events time { color: var(--sb-muted); margin-right: 10px; }
 .timeline-events a { text-decoration: underline; text-underline-offset: 3px; }
+
+.timeline-event-disclosure { margin-top: 20px; }
+.timeline-event-disclosure summary { cursor: pointer; padding: 12px 0; font-size: 13px; }
+.timeline-event-disclosure summary:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
+.timeline-events p { margin: 6px 0 0; color: var(--sb-muted); overflow-wrap: anywhere; }

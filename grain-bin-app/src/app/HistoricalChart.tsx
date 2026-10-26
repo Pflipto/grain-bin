@@ -42,7 +42,7 @@ export default function HistoricalChart({points,high,low,description,events=[]}:
             dot={false} activeDot={{r:5,fill:"var(--sb-harvest)",stroke:"var(--sb-silo)",strokeWidth:2}}
             connectNulls={false} isAnimationActive={false}/>
           {events.map((event,index)=><ReferenceLine key={event.id} x={Date.parse(`${event.date}T00:00:00Z`)} stroke="var(--sb-muted)" strokeDasharray="4 4"
-            label={{value:String(index+1),position:"insideBottomRight",fill:"var(--sb-silo)",fontSize:11}}/>)}
+            label={{value:String(event.markerNumber),position:"insideBottomRight",dy:-(index%3)*16,fill:"var(--sb-silo)",fontSize:11}}/>)}
           <ReferenceDot x={high.date} y={high.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
           <ReferenceDot x={low.date} y={low.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
         </LineChart>

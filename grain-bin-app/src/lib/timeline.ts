@@ -1,11 +1,11 @@
 import type {HistoryPoint} from "./calc";
-export type MarketEvent={id:string;date:string;label:string;sourceUrl:string};
+export type MarketEvent={id:string;date:string;label:string;sourceUrl?:string;summary?:string;datePrecision?:"day"|"month";importance?:number;markerNumber?:number};
 const DAY=86400000;
 export function eventTimestamp(event:MarketEvent):number|null {
   if(!/^\d{4}-\d{2}-\d{2}$/.test(event.date)||!event.id.trim()||!event.label.trim())return null;
   const date=Date.parse(`${event.date}T00:00:00Z`);
   if(!Number.isFinite(date)||new Date(date).toISOString().slice(0,10)!==event.date)return null;
-  try {const source=new URL(event.sourceUrl);if(source.protocol!=="https:"||source.username||source.password)return null;}catch{return null;}
+  if(event.sourceUrl!==undefined)try {const source=new URL(event.sourceUrl);if(source.protocol!=="https:"||source.username||source.password)return null;}catch{return null;}
   return date;
 }
 export function eventsInWindow(events:MarketEvent[],start:number,end:number) {

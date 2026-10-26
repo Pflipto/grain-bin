@@ -1,4 +1,4 @@
-# Event-source review — draft, not production annotations
+# Event-source review and editorial provenance
 
 The owner approved an aggregate timeline beginning with the data available in 2017, rather than a fabricated pre-history back to 2014. The chart uses the actual earliest observation (currently November 29, 2017). A 2014 Tether/Realcoin launch marker is outside that observed range and is not included.
 
@@ -45,3 +45,11 @@ Before promotion:
 - Do not import market-cap anchors or the approximate supply-record event as chart measurements. The chart continues to use its own DefiLlama aggregate series; cross-provider totals have different coverage.
 
 The draft remains open with an empty runtime event list. Source URLs plus the relevant source excerpts will allow review to continue even while direct access is blocked.
+
+## Owner decision — use supplied events without source lines
+
+The owner explicitly approved using the supplied information without source lines. This supersedes the earlier source-verification and owner-selection gate above. Runtime annotations are owner-supplied editorial content, not independently verified primary-source facts. No source URLs or verification claims are invented.
+
+The runtime dataset retains 47 candidate events. Approximate month dates are normalized to the first day for positioning and displayed as month/year in the event list. The scheduled 2027 event is omitted, as is the cross-provider approximate supply record. Events outside actual aggregate coverage do not render. Supply values still come exclusively from the existing API series. Importance 1 markers appear in all history; importance 1–2 markers appear in the one-year range; all in-range events and supplied summaries are available in a collapsed disclosure. Marker numbers match the full event list. The externally supplied market-cap anchors are never used as chart measurements.
+
+The PR can now leave draft under this explicit editorial decision. The earlier verification findings remain recorded for future fact-checking.
