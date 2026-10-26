@@ -21,11 +21,14 @@ export default function Momentum({records,failed,now}:{records:HistoricalRecord[
           <dt>{label}</dt>
           <dd className={change ? change.amount<0?"decline":change.amount>0?"momentum-gain":"" : ""}>{change?<><span>{signedMoney(change.amount)}</span><small>{signedPercent(change.percent)}</small></>:"n/a"}</dd>
         </div>)}
+        <div>
+          <dt>Distance from {windowLabel} high</dt>
+          <dd className={m.distanceFromHigh!==null ? m.distanceFromHigh<0?"decline":m.distanceFromHigh>0?"momentum-gain":"" : ""}>
+            <span>{m.distanceFromHigh!==null?signedPercent(m.distanceFromHigh):"n/a"}</span>
+            <small className="metric-date">{m.high?fullDate(m.high.date):"High unavailable"}</small>
+          </dd>
+        </div>
       </dl>
-      {m.latest && m.high && m.low && <dl className="range-metrics tabular">
-        <div><dt>Distance from {windowLabel} high</dt><dd>{m.distanceFromHigh===0?"At the high":signedPercent(m.distanceFromHigh!)}<small>{fullDate(m.high.date)}</small></dd></div>
-        <div><dt>Position in {windowLabel} range</dt><dd>{m.rangePosition!==null?`${m.rangePosition.toFixed(1)}%`:"n/a — flat range"}<small>Low {fullDate(m.low.date)} · High {fullDate(m.high.date)}</small></dd></div>
-      </dl>}
       <div className="momentum-provenance">
       <p className="data-note">Changes compare dated USD-valued snapshots; they are not necessarily token issuance or redemptions. Baselines more than 48 hours before the target are unavailable. {m.stale?"This snapshot was over 48 hours old when the page was generated.":""}</p>
       <div className="hero-footer">Source: DefiLlama · {failed?"History could not be retrieved.":m.snapshotDate!==null?`Snapshot: ${fullDate(m.snapshotDate)} UTC${m.stale?" · Stale snapshot":""}`:"Snapshot unavailable"} · Checked hourly</div>
