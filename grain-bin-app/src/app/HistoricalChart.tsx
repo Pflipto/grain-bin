@@ -1,23 +1,26 @@
 "use client";
 
 import {
-  CartesianGrid, Line, LineChart, ReferenceDot, ResponsiveContainer,
+  CartesianGrid, Line, LineChart, ReferenceDot, ReferenceLine, ResponsiveContainer,
   Tooltip, XAxis, YAxis,
 } from "recharts";
 import type { HistoryPoint } from "../lib/calc";
 import { fullDate, money, shortDate } from "../lib/format";
+import type { MarketEvent } from "../lib/timeline";
 
 type Props = {
   points: {date:number; supply:number|null}[];
   high: HistoryPoint;
   low: HistoryPoint;
   description: string;
+  events?: MarketEvent[];
+  onEventSelect?: (event:MarketEvent)=>void;
 };
 const exactMoney = new Intl.NumberFormat("en-US", {
   style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2,
 });
 
-export default function HistoricalChart({points,high,low,description}:Props) {
+export default function HistoricalChart({points,high,low,description,events=[],onEventSelect}:Props) {
   return <div className="interactive-history">
     <div className="history-plot">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:900,height:340}}>
@@ -39,7 +42,8 @@ export default function HistoricalChart({points,high,low,description}:Props) {
           <Line type="linear" dataKey="supply" name="Circulating value" stroke="var(--sb-silo)" strokeWidth={2}
             dot={false} activeDot={{r:5,fill:"var(--sb-harvest)",stroke:"var(--sb-silo)",strokeWidth:2}}
             connectNulls={false} isAnimationActive={false}/>
-          <ReferenceDot x={high.date} y={high.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
+          {events.map((event,index)=><ReferenceLine key={event.id} x={Date.parse(`${event.date}T00:00:00Z`)} stroke="var(--sb-muted)" strokeDasharray="4 4"
+            label={props=>{const box=props.viewBox as {x?:number;y?:number;height?:number};return <foreignObject x={(box.x??0)-16} y={(box.y??0)+(box.height??0)-44-(index%3)*46} width={32} height={44}><button type="button" className="timeline-marker" data-event-trigger={`chart-${event.id}`} aria-label={`Open event: ${event.label}`} aria-haspopup="dialog" onClick={e=>{e.stopPropagation();onEventSelect?.(event);}}><span>{event.markerNumber}</span></button></foreignObject>;}}/>)}          <ReferenceDot x={high.date} y={high.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
           <ReferenceDot x={low.date} y={low.supply} r={4} fill="var(--sb-silo)" stroke="var(--sb-paper)" strokeWidth={2}/>
         </LineChart>
       </ResponsiveContainer>
