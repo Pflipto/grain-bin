@@ -12,6 +12,10 @@ const columns:ColumnDef<ChainRow>[]=[
     const total=(table.options.meta as {total:number}).total, share=row.original.value/total*100;
     return <>{share.toFixed(1)}%<div className="chain-track" aria-hidden="true"><span style={{width:`${share}%`}}/></div></>;
   }},
+  {id:"dominant",accessorFn:row=>row.dominant?.symbols.join(" / "),header:"Dominant stablecoin",sortUndefined:"last",cell:({row})=>{
+    const leader=row.original.dominant;
+    return leader?<>{leader.symbols.join(" / ")}<small>{leader.symbols.length>1?"Tied · ":""}{leader.share.toFixed(1)}% of chain{leader.symbols.length>1?" each":""}</small></>:"n/a";
+  }},
   {id:"change",accessorFn:row=>row.change??undefined,header:"Provider-month change",sortUndefined:"last",cell:({row})=>{
     const r=row.original;
     return <><span className={r.change!==null&&r.change<0?"decline":r.change!==null&&r.change>0?"metric-gain":""}>{r.change!==null?signedMoney(r.change):"n/a"}</span>
@@ -33,7 +37,7 @@ export default function ChainTable({rows,total,other}:{rows:ChainRow[];total:num
         </button></th>;
       })}</tr>)}</thead>
       <tbody>{table.getRowModel().rows.map(r=><tr key={r.id}>{r.getVisibleCells().map(c=>c.column.id==="name"?<th scope="row" key={c.id}>{flexRender(c.column.columnDef.cell,c.getContext())}</th>:<td key={c.id}>{flexRender(c.column.columnDef.cell,c.getContext())}</td>)}</tr>)}</tbody>
-      <tfoot><tr><th scope="row">Other chains<small>{other.count} chains</small></th><td>{money(other.value)}</td><td>{percent(other.value,total)}%</td><td>Not combined</td></tr><tr><th scope="row">Available chain total</th><td>{money(total)}</td><td>100.0%</td><td>Not combined</td></tr></tfoot>
+      <tfoot><tr><th scope="row">Other chains<small>{other.count} chains</small></th><td>{money(other.value)}</td><td>{percent(other.value,total)}%</td><td>Not applicable</td><td>Not combined</td></tr><tr><th scope="row">Available chain total</th><td>{money(total)}</td><td>100.0%</td><td>Not applicable</td><td>Not combined</td></tr></tfoot>
     </table>
   </div>;
 }

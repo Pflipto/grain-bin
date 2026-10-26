@@ -24,3 +24,14 @@ test('valid chain values survive a missing token-level total',()=>{
  const m=buildChains([coin('1','USDT',null,{A:chain(20,10)})]);
  assert.equal(m.total,20);assert.equal(m.unavailableComparisons,1);assert.equal(m.leaders[0].chains[0].share,100);
 });
+
+test('dominant coin uses each chain amount rather than global token size',()=>{
+ const m=buildChains([coin('1','USDT',1000,{A:chain(20,10),B:chain(90,80)}),coin('2','USDC',100,{A:chain(80,70),B:chain(10,5)})]);
+ assert.deepEqual(m.rows.find(r=>r.name==='A').dominant,{symbols:['USDC'],share:80});
+ assert.deepEqual(m.rows.find(r=>r.name==='B').dominant,{symbols:['USDT'],share:90});
+});
+test('dominant coin excludes invalid and conflicting records, retains ties, and leaves zero chains unavailable',()=>{
+ const m=buildChains([coin('1','USDT',100,{A:chain(50,10),Z:chain(0,0)}),coin('2','USDC',100,{A:chain(50,10)}),coin('3','BAD',100,{A:chain(null,10)}),coin('4','CONFLICT',100,{A:chain(100,10)}),coin('4','CONFLICT',200,{A:chain(200,10)})]);
+ assert.deepEqual(m.rows.find(r=>r.name==='A').dominant,{symbols:['USDC','USDT'],share:50});
+ assert.equal(m.rows.find(r=>r.name==='Z').dominant,null);
+});
