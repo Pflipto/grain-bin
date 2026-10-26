@@ -1,4 +1,5 @@
-.market-tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--sb-line); border-radius: 9px; margin-bottom: 20px; background: var(--sb-canvas); }
+.market-view-heading { flex-wrap: wrap; }
+.market-tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--sb-line); border-radius: 9px; margin: 0; flex-shrink: 0; background: var(--sb-canvas); }
 .market-tabs button { min-height: 44px; padding: 8px 22px; border: 0; border-radius: 6px; color: var(--sb-muted); background: transparent; font: 500 13px var(--font-inter), sans-serif; cursor: pointer; }
 .market-tabs button[aria-selected="true"] { background: var(--sb-silo); color: var(--sb-paper); }
 .market-tabs button:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
