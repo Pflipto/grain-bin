@@ -2,7 +2,7 @@ import type { Stablecoin } from "./stablecoins";
 import { validAmount } from "./calc.ts";
 
 export const CHAIN_DIFFERENCE_THRESHOLD = 0.01;
-export type ChainRow = {name:string; value:number; change:number|null; changePct:number|null; missing:number};
+export type ChainRow = {name:string; value:number; change:number|null; changePct:number|null; missing:number; dominant:{symbols:string[];share:number}|null};
 
 export function buildChains(assets:Stablecoin[]) {
   const byId=new Map<string,Stablecoin|null>();
@@ -20,6 +20,7 @@ export function buildChains(assets:Stablecoin[]) {
     return coin!==null;
   });
   const sums=new Map<string,{value:number; change:number; previous:number; comparable:number; missing:number}>();
+  const dominant=new Map<string,{value:number;symbols:string[]}>();
   let missingCoins=0, invalidAmounts=0, mismatches=0, unavailableComparisons=0;
   const distributions: {symbol:string; chains:{name:string;value:number;share:number}[]; partial:boolean; mismatch:boolean; ambiguous:boolean}[]=[];
   for(const coin of coins) {
@@ -34,6 +35,11 @@ export function buildChains(assets:Stablecoin[]) {
       available.push({name,value:current});
       const sum=sums.get(name)??{value:0,change:0,previous:0,comparable:0,missing:0};
       sum.value+=current;
+      if(current>0) {
+        const leader=dominant.get(name);
+        if(!leader||current>leader.value)dominant.set(name,{value:current,symbols:[coin.symbol]});
+        else if(current===leader.value)leader.symbols.push(coin.symbol);
+      }
       if(validAmount(previous)) { sum.change+=current-previous; sum.previous+=previous; sum.comparable++; }
       else sum.missing++;
       sums.set(name,sum);
@@ -48,7 +54,7 @@ export function buildChains(assets:Stablecoin[]) {
       partial:invalid>0,mismatch,ambiguous:false});
   }
   const rows:ChainRow[]=[...sums].map(([name,s])=>({name,value:s.value,change:s.comparable?s.change:null,
-    changePct:s.comparable&&s.previous>0?s.change/s.previous*100:null,missing:s.missing})).sort((a,b)=>b.value-a.value||a.name.localeCompare(b.name));
+    changePct:s.comparable&&s.previous>0?s.change/s.previous*100:null,missing:s.missing,dominant:dominant.has(name)&&s.value>0?{symbols:dominant.get(name)!.symbols.toSorted(),share:dominant.get(name)!.value/s.value*100}:null})).sort((a,b)=>b.value-a.value||a.name.localeCompare(b.name));
   const total=rows.length?rows.reduce((s,r)=>s+r.value,0):null;
   const rest=rows.slice(8);
   const other={name:"Other chains",value:rest.reduce((s,r)=>s+r.value,0),count:rest.length};
