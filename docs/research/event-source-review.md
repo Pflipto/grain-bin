@@ -28,3 +28,20 @@ The issuer's GitHub release API at https://api.github.com/repos/circlefin/stable
 2. Obtain the owner's final event-list approval.
 3. Add only those verified entries to `src/data/market-events.ts` with id, ISO UTC date, neutral label, and HTTPS source URL.
 4. Re-run unit checks and browser checks of numbered markers/source links, all-history/one-year ranges, hover/touch/keyboard behavior, and mobile layout before marking ready.
+
+## Owner-supplied candidate dataset — October 26, 2026
+
+The supplied JSON is preserved unchanged in [inputs/stablecoin-event-candidates.json](inputs/stablecoin-event-candidates.json) as research input, not runtime chart data. Its confidence labels are supplied assertions, not independent verification. None of its event records includes a source URL. A fresh request to Circle's launch page still returned proxy CONNECT 403.
+
+Before promotion:
+
+- Attach a supporting primary-source URL and relevant dated text to each selected event. Prefer a small initial set over dozens of numbered markers across the full chart.
+- Resolve month-precision records with non-first-of-month dates: DeFi summer (2020-06-15), GHO (2023-07-15), USD1 (2025-03-25), and the proposed supply record (2026-05-15). Never present an approximate month as a verified exact day.
+- Keep the 2017-11-19 Tether hack outside the chart: it predates the first aggregate observation. Do not extend the line with invented data to accommodate it.
+- Keep the scheduled 2027 event outside observed history. Its effective-date wording depends on statutory conditions and requires legal-source verification.
+- Verify recent rulemaking claims, especially the asserted missed deadline and October 2026 final rule. Confidence labels alone do not establish either the facts or their legal effects.
+- Distinguish announcements from operational changes. For example, a BUSD halt announcement date need not be the date minting actually ceased; an IPO pricing announcement is distinct from first trading.
+- Rewrite summaries neutrally after verification. Remove unsupported causal claims about supply changes and avoid broad comparative claims such as “first” without evidence.
+- Do not import market-cap anchors or the approximate supply-record event as chart measurements. The chart continues to use its own DefiLlama aggregate series; cross-provider totals have different coverage.
+
+The draft remains open with an empty runtime event list. Source URLs plus the relevant source excerpts will allow review to continue even while direct access is blocked.
