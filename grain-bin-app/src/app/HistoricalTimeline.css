@@ -13,9 +13,11 @@
 .timeline-event-disclosure summary:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
 .timeline-events p { margin: 6px 0 0; color: var(--sb-muted); overflow-wrap: anywhere; }
 
-.timeline-marker { width: 32px; height: 44px; border: 1px solid var(--sb-line); border-radius: 6px; color: var(--sb-silo); background: var(--sb-paper); font: 600 11px var(--font-inter), sans-serif; cursor: pointer; }
-.timeline-marker:hover { background: var(--sb-canvas); }
-.timeline-marker:focus-visible { outline: 2px solid var(--sb-silo); outline-offset: -3px; }
+.timeline-marker { display: grid; place-items: center; width: 32px; height: 44px; padding: 0; border: 0; background: transparent; color: var(--sb-silo); font: 600 11px var(--font-inter), sans-serif; cursor: pointer; }
+.timeline-marker span { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 3px; box-sizing: border-box; border: 1px solid var(--sb-line); border-radius: 4px; background: var(--sb-paper); }
+.timeline-marker:hover span { background: var(--sb-canvas); }
+.timeline-marker:focus-visible { outline: none; }
+.timeline-marker:focus-visible span { outline: 2px solid var(--sb-silo); outline-offset: 1px; }
 .timeline-event-link { display: block; width: 100%; min-height: 44px; text-align: left; border: 0; background: transparent; color: var(--sb-silo); font: inherit; cursor: pointer; padding: 4px; }
 .timeline-event-link:hover strong { text-decoration: underline; text-underline-offset: 3px; }
 .timeline-event-link:focus-visible,.timeline-event-close:focus-visible { outline: 2px solid var(--sb-silo); outline-offset: 3px; }
