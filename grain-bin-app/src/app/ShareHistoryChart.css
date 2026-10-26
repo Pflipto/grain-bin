@@ -1,0 +1,10 @@
+.share-history-chart { height: 310px; width: 100%; min-width: 0; }
+.share-history-chart .recharts-surface:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; border-radius: 4px; }
+.share-series { display: flex; flex-wrap: wrap; gap: 16px; margin: 14px 0; color: var(--sb-muted); font-size: 12px; }
+.share-series span { display: inline-flex; align-items: center; gap: 7px; }
+.share-series i { width: 10px; height: 10px; border: 1px solid var(--sb-silo); }
+.share-history-chart .recharts-tooltip-wrapper { z-index: 2; }
+.share-history-chart .recharts-default-tooltip { max-width: calc(100vw - 120px); }
+@media (max-width: 540px) { .share-history-chart { height: 260px; } }
+
+.share-history-layout { align-items: start; }
