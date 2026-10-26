@@ -12,3 +12,16 @@
 .timeline-event-disclosure summary { cursor: pointer; padding: 12px 0; font-size: 13px; }
 .timeline-event-disclosure summary:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
 .timeline-events p { margin: 6px 0 0; color: var(--sb-muted); overflow-wrap: anywhere; }
+
+.timeline-marker { width: 32px; height: 44px; border: 1px solid var(--sb-line); border-radius: 6px; color: var(--sb-silo); background: var(--sb-paper); font: 600 11px var(--font-inter), sans-serif; cursor: pointer; }
+.timeline-marker:hover { background: var(--sb-canvas); }
+.timeline-marker:focus-visible { outline: 2px solid var(--sb-silo); outline-offset: -3px; }
+.timeline-event-link { display: block; width: 100%; min-height: 44px; text-align: left; border: 0; background: transparent; color: var(--sb-silo); font: inherit; cursor: pointer; padding: 4px; }
+.timeline-event-link:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+.timeline-event-link:focus-visible,.timeline-event-close:focus-visible { outline: 2px solid var(--sb-silo); outline-offset: 3px; }
+.timeline-event-card { width: min(480px,calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid var(--sb-line); border-radius: 12px; background: var(--sb-paper); color: var(--sb-silo); }
+.timeline-event-card::backdrop { background: rgb(24 30 25 / .45); }
+.timeline-event-card-content { padding: 24px; }
+.timeline-event-card h3 { font: 500 30px/1.15 var(--font-newsreader), Georgia, serif; margin: 18px 0; }
+.timeline-event-card p:not(.section-kicker) { font-size: 16px; line-height: 1.7; margin-bottom: 0; }
+.timeline-event-close { display: block; margin: 0 0 20px auto; min-height: 44px; padding: 8px 12px; border: 1px solid var(--sb-line); border-radius: 6px; background: transparent; color: var(--sb-silo); cursor: pointer; }
