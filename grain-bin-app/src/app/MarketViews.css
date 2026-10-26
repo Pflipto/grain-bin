@@ -1,0 +1,15 @@
+.market-view-heading { flex-wrap: wrap; }
+.market-tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--sb-line); border-radius: 9px; margin: 0; flex-shrink: 0; background: var(--sb-canvas); }
+.market-tabs button { min-height: 44px; padding: 8px 22px; border: 0; border-radius: 6px; color: var(--sb-muted); background: transparent; font: 500 13px var(--font-inter), sans-serif; cursor: pointer; }
+.market-tabs button[aria-selected="true"] { background: var(--sb-silo); color: var(--sb-paper); }
+.market-tabs button:focus-visible { outline: 3px solid var(--sb-silo); outline-offset: 3px; }
+.chain-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+.chain-leader { padding: 20px; border: 1px solid var(--sb-line); border-radius: 8px; background: var(--sb-paper); }
+.chain-leader h3 { font-size: 15px; margin: 0 0 16px; }
+.chain-leader ol { list-style: none; padding: 0; margin: 0; }
+.chain-leader li { margin-top: 14px; font-size: 12px; }
+.chain-label { display: flex; justify-content: space-between; gap: 12px; }
+.chain-track { height: 5px; background: var(--sb-line); margin-top: 7px; border-radius: 2px; }
+.chain-track span { display: block; height: 100%; background: var(--sb-silo); border-radius: inherit; }
+.chain-table { min-width: 660px; }
+@media (max-width: 540px) { .chain-comparison { grid-template-columns: 1fr; } }
